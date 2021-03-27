@@ -1,2 +1,2 @@
 /* eslint-disable import/prefer-default-export */
-export { default as ChafanVueEditorsSample } from './chafan-vue-editors-sample.vue';
+export { default as Tiptap } from './tiptap.vue';
