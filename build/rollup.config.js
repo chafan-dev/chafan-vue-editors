@@ -50,7 +50,7 @@ const baseConfig = {
     babel: {
       exclude: 'node_modules/**',
       extensions: ['.js', '.jsx', '.ts', '.tsx', '.vue'],
-      babelHelpers: 'bundled',
+      babelHelpers: 'runtime',
     },
   },
 };

@@ -29,6 +29,12 @@ Remember to import tippy CSS:
 import 'tippy.js/dist/tippy.css';
 ```
 
+## Use in HTML directly from CDN
+
+See `examples/index.html`.
+
+NOTE: Select the newest version from https://www.jsdelivr.com/package/npm/chafan-vue-editors?path=dist
+
 ## Development
 
 Update `src/lib-components/index.ts` and `chafan-vue-editors.d.ts` after adding a new component to `src/lib-components/`.
