@@ -61,9 +61,6 @@
           <slot :user="user"></slot>
         </div>
       </template>
-      <div v-else class="suggestion-list__item is-empty">
-        {{ $t('No users found') }}
-      </div>
     </div>
   </div>
 </template>
