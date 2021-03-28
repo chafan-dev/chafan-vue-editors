@@ -313,7 +313,9 @@ export default class Tiptap extends Vue {
 
   beforeDestroy() {
     this.destroyPopup();
-    this.editor.destroy();
+    if (this.editor) {
+      this.editor.destroy();
+    }
   }
 
   public reset() {
