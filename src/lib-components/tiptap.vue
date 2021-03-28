@@ -107,6 +107,8 @@ export default class Tiptap extends Vue {
   @Prop() public readonly searchUsers!: (query: string) => Promise<any[]>;
   @Prop() public readonly userLabel!: (userItem: any) => string;
   @Prop() public readonly userHref!: (userItem: any) => string;
+  @Prop() public readonly bodyFormat: body_format_T | undefined;
+  @Prop() public readonly body: string | undefined;
 
   // For mention
   private query: string | null = null;
@@ -214,6 +216,13 @@ export default class Tiptap extends Vue {
       },
       editable: this.editable,
     });
+    if (this.body) {
+      if (!this.bodyFormat || this.bodyFormat === 'tiptap_json') {
+        this.loadJSON(JSON.parse(this.body));
+      } else if (this.bodyFormat === 'html') {
+        this.loadHTML(this.body);
+      }
+    }
   }
 
   private upHandler() {
