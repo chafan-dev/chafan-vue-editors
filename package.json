@@ -1,6 +1,6 @@
 {
   "name": "chafan-vue-editors",
-  "version": "0.1.7",
+  "version": "0.2.0",
   "description": "",
   "main": "dist/chafan-vue-editors.ssgr.js",
   "browser": "dist/chafan-vue-editors.esm.js",
@@ -22,6 +22,8 @@
   },
   "dependencies": {
     "@chafan/vditor": "3.8.2-chafan.3",
+    "core-js": "^3.10.0",
+    "lodash": "^4.17.21",
     "tippy.js": "^6.3.1",
     "tiptap": "^1.32.1",
     "tiptap-extensions": "^1.35.1",
@@ -29,14 +31,15 @@
     "vue-property-decorator": "^9.1.2"
   },
   "devDependencies": {
+    "@babel/plugin-transform-runtime": "^7.13.10",
     "@babel/preset-env": "^7.11.0",
     "@babel/preset-typescript": "^7.11.0",
-    "@babel/plugin-transform-runtime": "^7.13.10",
     "@rollup/plugin-alias": "^3.1.1",
     "@rollup/plugin-babel": "^5.2.2",
     "@rollup/plugin-commonjs": "^17.0.0",
     "@rollup/plugin-node-resolve": "^11.0.1",
     "@rollup/plugin-replace": "^2.3.4",
+    "@types/lodash": "^4.14.168",
     "@vue/cli-plugin-babel": "^4.5.10",
     "@vue/cli-plugin-typescript": "^4.5.10",
     "@vue/cli-service": "^4.5.10",

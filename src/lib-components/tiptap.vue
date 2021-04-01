@@ -89,8 +89,16 @@ import {
 import Mention from '@/tiptap-mention';
 
 import tippy, { sticky } from 'tippy.js';
+import * as _ from 'lodash';
 
 import { Component, Prop, Vue } from 'vue-property-decorator';
+
+const EMPTY_DOCUMENT = {
+  type: 'doc',
+  content: [{
+    type: 'paragraph',
+  }],
+};
 
 @Component({
   components: {
@@ -107,7 +115,7 @@ export default class Tiptap extends Vue {
   @Prop() public readonly searchUsers!: (query: string) => Promise<any[]>;
   @Prop() public readonly userLabel!: (userItem: any) => string;
   @Prop() public readonly userHref!: (userItem: any) => string;
-  @Prop() public readonly bodyFormat: body_format_T | undefined;
+  @Prop() public readonly bodyFormat: 'html' | 'tiptap_json' | undefined;
   @Prop() public readonly body: string | undefined;
 
   // For mention
@@ -308,8 +316,12 @@ export default class Tiptap extends Vue {
     return this.$el.querySelector('.editor__content')!.textContent || '';
   }
 
-  public getJSON() {
-    return this.editor.getJSON();
+  public getJSON(): object | null {
+    const json = this.editor.getJSON();
+    if (_.isEqual(json, EMPTY_DOCUMENT)) {
+      return null;
+    }
+    return json;
   }
 
   public loadJSON(object: any) {
