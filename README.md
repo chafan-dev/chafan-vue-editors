@@ -23,10 +23,11 @@ You can also import component individually rather than registering globally:
 import { Tiptap } from 'chafan-vue-editors';
 ```
 
-Remember to import tippy CSS:
+Remember to import CSS:
 
 ```ts
 import 'tippy.js/dist/tippy.css';
+import 'highlight.js/styles/github.css';
 ```
 
 ## Use in HTML directly from CDN

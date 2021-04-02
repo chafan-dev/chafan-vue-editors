@@ -91,7 +91,6 @@ import rust from 'highlight.js/lib/languages/rust';
 import swift from 'highlight.js/lib/languages/swift';
 import yaml from 'highlight.js/lib/languages/yaml';
 import markdown from 'highlight.js/lib/languages/markdown';
-import 'highlight.js/styles/github.css';
 
 import { Editor, EditorContent, EditorMenuBubble } from 'tiptap';
 import {

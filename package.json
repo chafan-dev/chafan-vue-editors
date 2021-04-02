@@ -1,6 +1,6 @@
 {
   "name": "chafan-vue-editors",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "",
   "main": "dist/chafan-vue-editors.ssgr.js",
   "browser": "dist/chafan-vue-editors.esm.js",
