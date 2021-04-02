@@ -2,7 +2,7 @@
   <div class="tiptap-editor">
     <div v-if="editor">
       <input type="text" v-model="editor.extensions.options.placeholder.emptyNodeText" hidden />
-      <editor-menu-bubble
+      <EditorMenuBubble
           :editor="editor"
           v-slot="{ commands, isActive, menu }"
           v-if="editable"
@@ -39,12 +39,12 @@
               class="menububble__button"
               @click="showImagePrompt(commands.image)"
           >
-            image
+            Image
           </button>
         </div>
-      </editor-menu-bubble>
+      </EditorMenuBubble>
 
-      <editor-content
+      <EditorContent
           class="editor__content"
           :class="{
           'editable-editor-content': editable,
@@ -72,6 +72,27 @@
 </template>
 
 <script lang="ts">
+import javascript from 'highlight.js/lib/languages/javascript';
+import css from 'highlight.js/lib/languages/css';
+import c from 'highlight.js/lib/languages/c';
+import java from 'highlight.js/lib/languages/java';
+import python from 'highlight.js/lib/languages/python';
+import cpp from 'highlight.js/lib/languages/cpp';
+import csharp from 'highlight.js/lib/languages/csharp';
+import json from 'highlight.js/lib/languages/json';
+import sql from 'highlight.js/lib/languages/sql';
+import typescript from 'highlight.js/lib/languages/typescript';
+import go from 'highlight.js/lib/languages/go';
+import ruby from 'highlight.js/lib/languages/ruby';
+import bash from 'highlight.js/lib/languages/bash';
+import xml from 'highlight.js/lib/languages/xml';
+import php from 'highlight.js/lib/languages/php';
+import rust from 'highlight.js/lib/languages/rust';
+import swift from 'highlight.js/lib/languages/swift';
+import yaml from 'highlight.js/lib/languages/yaml';
+import markdown from 'highlight.js/lib/languages/markdown';
+import 'highlight.js/styles/github.css';
+
 import { Editor, EditorContent, EditorMenuBubble } from 'tiptap';
 import {
   Blockquote,
@@ -91,6 +112,7 @@ import {
   Underline,
   History,
   Placeholder,
+  CodeBlockHighlight,
 } from 'tiptap-extensions';
 import Mention from '@/extensions/Mention';
 import ImageUpload from '@/extensions/ImageUpload';
@@ -185,6 +207,29 @@ export default class Tiptap extends Vue {
         new Underline(),
         new History(),
         new ImageUpload(null, null, this.upload),
+        new CodeBlockHighlight({
+          languages: {
+            javascript,
+            css,
+            c,
+            java,
+            python,
+            cpp,
+            csharp,
+            json,
+            sql,
+            typescript,
+            go,
+            ruby,
+            bash,
+            xml,
+            php,
+            rust,
+            swift,
+            yaml,
+            markdown
+          },
+        }),
         new Mention({
           items: async () => {
             return await this.searchUsers('');
@@ -365,6 +410,9 @@ export default class Tiptap extends Vue {
 $color-black: #000000;
 $color-white: #ffffff;
 $color-grey: #dddddd;
+$body-font-family: 'Roboto', '-apple-system', 'BlinkMacSystemFont', 'Helvetica Neue', 'PingFang SC',
+  sans-serif, 'Microsoft YaHei', 'Source Han Sans SC', 'Noto Sans CJK SC', 'WenQuanYi Micro Hei';
+$mono-font-family: mononoki, Consolas, Liberation Mono, Courier, monospace !important;
 
 .menububble {
   position: absolute;
@@ -429,6 +477,7 @@ $color-grey: #dddddd;
     overflow-wrap: break-word;
     word-wrap: break-word;
     word-break: break-word;
+    font-family: $body-font-family;
 
     * {
       caret-color: currentColor;
@@ -437,23 +486,22 @@ $color-grey: #dddddd;
     pre {
       padding: 0.7rem 1rem;
       border-radius: 5px;
-      background: $color-black;
-      color: $color-white;
-      font-size: 0.8rem;
+      background: rgba($color-grey, 0.3);
+      color: $color-black;
       overflow-x: auto;
 
       code {
         display: block;
+        font-family: $mono-font-family;
       }
     }
 
     p code {
       padding: 0.2rem 0.4rem;
       border-radius: 5px;
-      font-size: 0.8rem;
-      font-weight: bold;
-      background: rgba($color-black, 0.1);
-      color: rgba($color-black, 0.8);
+      background: rgba($color-grey, 0.3);
+      color: $color-black;
+      font-family: $mono-font-family;
     }
 
     ul,
@@ -571,14 +619,11 @@ $color-grey: #dddddd;
 }
 
 .mention {
-  background: rgba($color-black, 0.1);
-  color: rgba($color-black, 0.6);
-  font-size: 0.8rem;
-  font-weight: bold;
-  border-radius: 5px;
+  color: #1976d2;
   padding: 0.2rem 0.5rem;
   white-space: nowrap;
   text-decoration: none;
+  font-family: $body-font-family;
 }
 .mention-suggestion {
   color: rgba($color-black, 0.6);
@@ -586,8 +631,7 @@ $color-grey: #dddddd;
 .suggestion-list {
   padding: 0.2rem;
   border: 2px solid rgba($color-black, 0.1);
-  font-size: 0.8rem;
-  font-weight: bold;
+
   &__no-results {
     padding: 0.2rem 0.5rem;
   }
@@ -608,10 +652,10 @@ $color-grey: #dddddd;
     }
   }
 }
+
 .tippy-box[data-theme~='dark'] {
   background-color: $color-black;
   padding: 0;
-  font-size: 1rem;
   text-align: inherit;
   color: $color-white;
   border-radius: 5px;

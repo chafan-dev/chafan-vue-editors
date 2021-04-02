@@ -8,6 +8,7 @@
 import { Component, Vue } from 'vue-property-decorator';
 import {Tiptap} from "@/lib-components";
 import axios from "axios";
+import 'tippy.js/dist/tippy.css';
 
 @Component({
   components: { Tiptap }
@@ -27,3 +28,9 @@ export default class ServeDev extends Vue {
   }
 }
 </script>
+
+<style>
+#app {
+  margin-top: 100px;
+}
+</style>
