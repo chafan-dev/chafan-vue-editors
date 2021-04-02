@@ -39,4 +39,6 @@ NOTE: Select the newest version from https://www.jsdelivr.com/package/npm/chafan
 
 Update `src/lib-components/index.ts` and `chafan-vue-editors.d.ts` after adding a new component to `src/lib-components/`.
 
-Run `npm run build` to generate the redistributable versions.
+Run `yarn run build` to generate the redistributable versions.
+
+Run `yarn run serve` to launch a preview server locally.

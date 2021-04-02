@@ -35,6 +35,12 @@
           >
             C
           </button>
+          <button
+              class="menububble__button"
+              @click="showImagePrompt(commands.image)"
+          >
+            image
+          </button>
         </div>
       </editor-menu-bubble>
 
@@ -86,7 +92,8 @@ import {
   History,
   Placeholder,
 } from 'tiptap-extensions';
-import Mention from '@/tiptap-mention';
+import Mention from '@/extensions/Mention';
+import ImageUpload from '@/extensions/ImageUpload';
 
 import tippy, { sticky } from 'tippy.js';
 import * as _ from 'lodash';
@@ -117,6 +124,7 @@ export default class Tiptap extends Vue {
   @Prop() public readonly userHref!: (userItem: any) => string;
   @Prop() public readonly bodyFormat: 'html' | 'tiptap_json' | undefined;
   @Prop() public readonly body: string | undefined;
+  @Prop() public readonly upload: ((blob: Blob) => string) | undefined;
 
   // For mention
   private query: string | null = null;
@@ -176,6 +184,7 @@ export default class Tiptap extends Vue {
         new Strike(),
         new Underline(),
         new History(),
+        new ImageUpload(null, null, this.upload),
         new Mention({
           items: async () => {
             return await this.searchUsers('');
@@ -299,6 +308,13 @@ export default class Tiptap extends Vue {
 
   get showSuggestions() {
     return this.query || this.hasResults;
+  }
+
+  showImagePrompt(command) {
+    const src = prompt('Enter the url of your image here')
+    if (src !== null) {
+      command({src})
+    }
   }
 
   destroyPopup() {

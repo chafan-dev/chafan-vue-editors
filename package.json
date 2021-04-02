@@ -43,6 +43,7 @@
     "@vue/cli-plugin-babel": "^4.5.10",
     "@vue/cli-plugin-typescript": "^4.5.10",
     "@vue/cli-service": "^4.5.10",
+    "axios": "^0.21.1",
     "babel-core": "^6.26.3",
     "cross-env": "^7.0.3",
     "minimist": "^1.2.5",
