@@ -515,7 +515,8 @@ $mono-font-family: mononoki, Consolas, Liberation Mono, Courier, monospace !impo
     }
 
     a {
-      color: inherit;
+      text-decoration: none;
+      color: #1976d2;
     }
 
     blockquote {
@@ -618,10 +619,7 @@ $mono-font-family: mononoki, Consolas, Liberation Mono, Courier, monospace !impo
 }
 
 .mention {
-  color: #1976d2;
-  padding: 0.2rem 0.5rem;
   white-space: nowrap;
-  text-decoration: none;
   font-family: $body-font-family;
 }
 .mention-suggestion {
@@ -639,6 +637,8 @@ $mono-font-family: mononoki, Consolas, Liberation Mono, Courier, monospace !impo
     padding: 0.2rem 0.5rem;
     margin-bottom: 0.2rem;
     cursor: pointer;
+    font-family: $body-font-family;
+
     &:last-child {
       margin-bottom: 0;
     }
