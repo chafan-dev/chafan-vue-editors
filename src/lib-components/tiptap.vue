@@ -160,6 +160,7 @@ export default class Tiptap extends Vue {
 
                 return {
                   onStart: props => {
+                    props.userLabel = userLabel;
                     component = new VueRenderer(MentionList, {
                       parent: this,
                       propsData: props,

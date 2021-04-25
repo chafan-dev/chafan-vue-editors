@@ -7,7 +7,7 @@
         :key="index"
         @click="selectItem(index)"
     >
-      {{ item.label }}
+      {{ userLabel(item) }}
     </button>
   </div>
 </template>
@@ -19,6 +19,7 @@ import {Component, Vue, Prop, Watch} from "vue-property-decorator";
 export default class MentionList extends Vue {
   @Prop() public readonly items!: any[];
   @Prop() public readonly command!: any;
+  @Prop() public readonly userLabel!: (userItem: any) => string;
 
   private selectedIndex = 0;
 
