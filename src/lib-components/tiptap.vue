@@ -123,7 +123,7 @@ export default class Tiptap extends Vue {
 
   @Prop() public readonly bodyFormat: 'html' | 'tiptap_json' | undefined;
   @Prop() public readonly body: string | undefined;
-  @Prop() public readonly upload: ((blob: Blob) => string) | undefined;
+  @Prop() public readonly upload: ((blob: Blob) => Promise<string>) | undefined;
 
   private editor: any = null;
 
@@ -142,7 +142,9 @@ export default class Tiptap extends Vue {
             showOnlyWhenEditable: true,
             showOnlyCurrent: true,
           }),
-          ImageUpload,
+          ImageUpload.configure({
+            uploadFunc: this.upload,
+          }),
           CodeBlockLowlight.configure({
             lowlight,
           }),
