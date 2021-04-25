@@ -68,6 +68,9 @@ export default class MentionList extends Vue {
 </script>
 
 <style lang="scss" scoped>
+$body-font-family: 'Roboto', '-apple-system', 'BlinkMacSystemFont', 'Helvetica Neue', 'PingFang SC',
+sans-serif, 'Microsoft YaHei', 'Source Han Sans SC', 'Noto Sans CJK SC', 'WenQuanYi Micro Hei';
+
 .items {
   position: relative;
   border-radius: 0.25rem;
@@ -76,6 +79,7 @@ export default class MentionList extends Vue {
 }
 
 .item {
+  font-family: $body-font-family;
   display: block;
   width: 100%;
   text-align: left;

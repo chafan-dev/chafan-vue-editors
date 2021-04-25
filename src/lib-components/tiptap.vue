@@ -222,7 +222,7 @@ export default class Tiptap extends Vue {
   }
 
   public loadHTML(htmlBody: string) {
-    this.editor.setContent(htmlBody);
+    this.editor.commands.setContent(htmlBody);
   }
 
   public getText() {
@@ -238,7 +238,7 @@ export default class Tiptap extends Vue {
   }
 
   public loadJSON(object: any) {
-    this.editor.setContent(object);
+    this.editor.commands.setContent(object);
   }
 
   public getHTML() {
@@ -260,7 +260,7 @@ export default class Tiptap extends Vue {
   }
 
   public reset() {
-    this.editor.clearContent();
+    this.editor.commands.clearContent();
   }
 }
 </script>
