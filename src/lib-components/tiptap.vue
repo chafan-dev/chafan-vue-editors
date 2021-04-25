@@ -1,72 +1,33 @@
 <template>
   <div class="tiptap-editor">
     <div v-if="editor">
-      <input type="text" v-model="editor.extensions.options.placeholder.emptyNodeText" hidden />
-      <EditorMenuBubble
+      <BubbleMenu
+          class="menububble"
           :editor="editor"
-          v-slot="{ commands, isActive, menu }"
-          v-if="editable"
+          v-if="editor"
       >
-        <div
-            class="menububble"
-            :class="{ 'is-active': menu.isActive }"
-            :style="`left: ${menu.left}px; bottom: ${menu.bottom}px;`"
-        >
-          <button
-              class="menububble__button"
-              :class="{ 'is-active': isActive.bold() }"
-              @click="commands.bold"
-          >
+          <button @click="editor.chain().focus().toggleBold().run()" :class="{ 'is-active': editor.isActive('bold') }">
             B
           </button>
-
-          <button
-              class="menububble__button"
-              :class="{ 'is-active': isActive.italic() }"
-              @click="commands.italic"
-          >
+          <button @click="editor.chain().focus().toggleItalic().run()" :class="{ 'is-active': editor.isActive('italic') }">
             I
           </button>
-
-          <button
-              class="menububble__button"
-              :class="{ 'is-active': isActive.code() }"
-              @click="commands.code"
-          >
-            C
+          <button @click="editor.chain().focus().toggleStrike().run()" :class="{ 'is-active': editor.isActive('strike') }">
+            S
           </button>
-          <button
-              class="menububble__button"
-              @click="showImagePrompt(commands.image)"
-          >
+          <button @click="editor.chain().focus().toggleCodeBlock().run()" :class="{ 'is-active': editor.isActive('codeBlock') }">
+            Code
+          </button>
+          <button @click="addImage">
             Image
           </button>
-        </div>
-      </EditorMenuBubble>
+      </BubbleMenu>
 
-      <EditorContent
-          class="editor__content"
-          :class="{
+      <EditorContent :editor="editor" class="editor__content" :class="{
           'editable-editor-content': editable,
           'editable-comment': commentMode && editable,
           'editable-non-comment': !commentMode && editable,
-        }"
-          :editor="editor"
-      />
-    </div>
-
-    <div class="suggestion-list" v-show="showSuggestions" ref="suggestions">
-      <template v-if="hasResults">
-        <div
-            v-for="(user, index) in filteredUsers"
-            :key="index"
-            class="suggestion-list__item"
-            :class="{ 'is-selected': navigatedUserIndex === index }"
-            @click="selectUser(user)"
-        >
-          <slot :user="user"></slot>
-        </div>
-      </template>
+        }" />
     </div>
   </div>
 </template>
@@ -92,31 +53,45 @@ import swift from 'highlight.js/lib/languages/swift';
 import yaml from 'highlight.js/lib/languages/yaml';
 import markdown from 'highlight.js/lib/languages/markdown';
 
-import { Editor, EditorContent, EditorMenuBubble } from 'tiptap';
 import {
-  Blockquote,
-  BulletList,
-  CodeBlock,
-  HardBreak,
-  Heading,
-  ListItem,
-  OrderedList,
-  TodoItem,
-  TodoList,
-  Bold,
-  Code,
-  Italic,
-  Link,
-  Strike,
-  Underline,
-  History,
-  Placeholder,
-  CodeBlockHighlight,
-} from 'tiptap-extensions';
-import Mention from '@/extensions/Mention';
+  mergeAttributes,
+} from '@tiptap/core'
+
+import { Editor, EditorContent, BubbleMenu, VueRenderer } from '@tiptap/vue-2';
+import MentionList from '@/extensions/MentionList.vue';
+
+import { defaultExtensions } from '@tiptap/starter-kit'
+import Link from '@tiptap/extension-link'
+import Underline from '@tiptap/extension-underline'
+import Placeholder from '@tiptap/extension-placeholder'
+import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight'
+import Mention from '@tiptap/extension-mention'
+
+import lowlight from 'lowlight/lib/core'
+lowlight.registerLanguage('javascript', javascript);
+lowlight.registerLanguage('css', css);
+lowlight.registerLanguage('c', c);
+lowlight.registerLanguage('java', java);
+lowlight.registerLanguage('python', python);
+lowlight.registerLanguage('cpp', cpp);
+lowlight.registerLanguage('csharp', csharp);
+lowlight.registerLanguage('json', json);
+lowlight.registerLanguage('sql', sql);
+lowlight.registerLanguage('typescript', typescript);
+lowlight.registerLanguage('go', go);
+lowlight.registerLanguage('ruby', ruby);
+lowlight.registerLanguage('bash', bash);
+lowlight.registerLanguage('xml', xml);
+lowlight.registerLanguage('php', php);
+lowlight.registerLanguage('rust', rust);
+lowlight.registerLanguage('swift', swift);
+lowlight.registerLanguage('yaml', yaml);
+lowlight.registerLanguage('markdow', markdown);
+
+
 import ImageUpload from '@/extensions/ImageUpload';
 
-import tippy, { sticky } from 'tippy.js';
+import tippy from 'tippy.js';
 import * as _ from 'lodash';
 
 import { Component, Prop, Vue } from 'vue-property-decorator';
@@ -131,7 +106,7 @@ const EMPTY_DOCUMENT = {
 @Component({
   components: {
     EditorContent,
-    EditorMenuBubble,
+    BubbleMenu,
   },
 })
 export default class Tiptap extends Vue {
@@ -140,135 +115,92 @@ export default class Tiptap extends Vue {
   @Prop() public readonly initialValue: string | undefined;
   @Prop() public readonly placeholder: string | undefined;
   @Prop({ default: false }) public readonly commentMode!: boolean;
-  @Prop() public readonly searchUsers!: (query: string) => Promise<any[]>;
+
+  // Customizable utils for mention
+  @Prop() public readonly searchUsers!: (query: string) => any[];
   @Prop() public readonly userLabel!: (userItem: any) => string;
   @Prop() public readonly userHref!: (userItem: any) => string;
+
   @Prop() public readonly bodyFormat: 'html' | 'tiptap_json' | undefined;
   @Prop() public readonly body: string | undefined;
   @Prop() public readonly upload: ((blob: Blob) => string) | undefined;
 
-  // For mention
-  private query: string | null = null;
-  private suggestionRange = null;
-  private navigatedUserIndex = 0;
-  private insertMention: any = null;
-
-  private filteredUsers = [];
-
-  private onEnterMention({ items, query, range, command, virtualNode }: any) {
-    this.query = query;
-    this.filteredUsers = items;
-    this.hasResults = this.filteredUsers.length > 0;
-    this.suggestionRange = range;
-    this.renderPopup(virtualNode);
-    // we save the command for inserting a selected mention
-    // this allows us to call it inside of our custom popup
-    // via keyboard navigation and on click
-    this.insertMention = command;
-  }
-
-  private onChangeMention({ items, query, range, virtualNode }: any) {
-    this.query = query;
-    this.filteredUsers = items;
-    this.hasResults = this.filteredUsers.length > 0;
-    this.suggestionRange = range;
-    this.navigatedUserIndex = 0;
-    this.renderPopup(virtualNode);
-  }
-
   private editor: any = null;
 
   mounted() {
+    const userLabel = this.userLabel;
+    const userHref = this.userHref;
     this.editor = new Editor({
       content: this.initialValue ? JSON.parse(this.initialValue) : undefined,
       extensions: [
-        new Placeholder({
-          emptyEditorClass: 'is-editor-empty',
-          emptyNodeClass: 'is-empty',
-          emptyNodeText: this.placeholder || '',
-          showOnlyWhenEditable: true,
-          showOnlyCurrent: true,
-        }),
-        new Blockquote(),
-        new BulletList(),
-        new CodeBlock(),
-        new HardBreak(),
-        new Heading({ levels: [1, 2, 3] }),
-        new ListItem(),
-        new OrderedList(),
-        new TodoItem(),
-        new TodoList(),
-        new Link(),
-        new Bold(),
-        new Code(),
-        new Italic(),
-        new Strike(),
-        new Underline(),
-        new History(),
-        new ImageUpload(null, null, this.upload),
-        new CodeBlockHighlight({
-          languages: {
-            javascript,
-            css,
-            c,
-            java,
-            python,
-            cpp,
-            csharp,
-            json,
-            sql,
-            typescript,
-            go,
-            ruby,
-            bash,
-            xml,
-            php,
-            rust,
-            swift,
-            yaml,
-            markdown
-          },
-        }),
-        new Mention({
-          items: async () => {
-            return await this.searchUsers('');
-          },
-          onEnter: this.onEnterMention,
-          // is called when a suggestion has changed
-          onChange: this.onChangeMention,
-          // is called when a suggestion is cancelled
-          onExit: () => {
-            // reset all saved values
-            this.query = null;
-            this.filteredUsers = [];
-            this.hasResults = false;
-            this.suggestionRange = null;
-            this.navigatedUserIndex = 0;
-            this.destroyPopup();
-          },
-          // is called on every keyDown event while a suggestion is active
-          onKeyDown: ({ event }: { event: any}) => {
-            if (event.key === 'ArrowUp') {
-              this.upHandler();
-              return true;
-            }
-            if (event.key === 'ArrowDown') {
-              this.downHandler();
-              return true;
-            }
-            if (event.key === 'Enter') {
-              this.enterHandler();
-              return true;
-            }
-            return false;
-          },
-          onFilter: async (items: any, query: any) => {
-            if (!query) {
-              return items;
-            }
-            return await this.searchUsers(query);
-          },
-        }),
+          Underline,
+          Link,
+          Placeholder.configure({
+            emptyEditorClass: 'is-editor-empty',
+            emptyNodeClass: 'is-empty',
+            placeholder: this.placeholder || '',
+            showOnlyWhenEditable: true,
+            showOnlyCurrent: true,
+          }),
+          ImageUpload,
+          CodeBlockLowlight.configure({
+            lowlight,
+          }),
+          Mention.configure({
+            HTMLAttributes: {
+              class: 'mention',
+            },
+            suggestion: {
+              items: this.searchUsers,
+              render: () => {
+                let component
+                let popup
+
+                return {
+                  onStart: props => {
+                    component = new VueRenderer(MentionList, {
+                      parent: this,
+                      propsData: props,
+                    })
+
+                    popup = tippy('body', {
+                      getReferenceClientRect: props.clientRect,
+                      appendTo: () => document.body,
+                      content: component.element,
+                      showOnCreate: true,
+                      interactive: true,
+                      trigger: 'manual',
+                      placement: 'bottom-start',
+                    })
+                  },
+                  onUpdate(props) {
+                    component.updateProps(props)
+
+                    popup[0].setProps({
+                      getReferenceClientRect: props.clientRect,
+                    })
+                  },
+                  onKeyDown(props) {
+                    return component.ref?.onKeyDown(props)
+                  },
+                  onExit() {
+                    popup[0].destroy()
+                    component.destroy()
+                  }
+                }
+              },
+            },
+          }).extend({
+            renderHTML({ node, HTMLAttributes }) {
+              return ['a', mergeAttributes(mergeAttributes(this.options.HTMLAttributes, HTMLAttributes), {
+                href: userHref(node.attrs.id),
+              }), '@' + userLabel(node.attrs.id)]
+            },
+            renderText({ node }) {
+              return '@' + userLabel(node.attrs.id)
+            },
+          }),
+          ...defaultExtensions()
       ],
       onUpdate: () => {
         if (this.onEditorChange) {
@@ -283,88 +215,6 @@ export default class Tiptap extends Vue {
       } else if (this.bodyFormat === 'html') {
         this.loadHTML(this.body);
       }
-    }
-  }
-
-  private upHandler() {
-    this.navigatedUserIndex =
-        (this.navigatedUserIndex + this.filteredUsers.length - 1) % this.filteredUsers.length;
-  }
-
-  // navigate to the next item
-  // if it's the last item, navigate to the first one
-  private downHandler() {
-    this.navigatedUserIndex = (this.navigatedUserIndex + 1) % this.filteredUsers.length;
-  }
-
-  private enterHandler() {
-    const user = this.filteredUsers[this.navigatedUserIndex];
-    if (user) {
-      this.selectUser(user);
-    }
-  }
-
-  // we have to replace our suggestion text with a mention
-  // so it's important to pass also the position of your suggestion text
-  selectUser(user: any) {
-    this.insertMention({
-      range: this.suggestionRange,
-      attrs: {
-        id: user.uuid,
-        label: this.userLabel(user),
-        href: this.userHref(user),
-      },
-    });
-    this.editor.focus();
-  }
-
-  // renders a popup with suggestions
-  // tiptap provides a virtualNode object for using popper.js (or tippy.js) for popups
-  private renderPopup(node: any) {
-    const boundingClientRect = node.getBoundingClientRect();
-    const { x, y } = boundingClientRect;
-    if (x === 0 && y === 0) {
-      return;
-    }
-    if (this.popup) {
-      return;
-    }
-    // ref: https://atomiks.github.io/tippyjs/v6/all-props/
-    this.popup = tippy(this.$el, {
-      getReferenceClientRect: () => boundingClientRect,
-      appendTo: () => document.body,
-      interactive: true,
-      sticky: true, // make sure position of tippy is updated when content changes
-      plugins: [sticky],
-      content: this.$refs.suggestions as HTMLElement,
-      trigger: 'mouseenter', // manual
-      showOnCreate: true,
-      theme: 'dark',
-      placement: 'top-start',
-      inertia: true,
-      duration: [400, 200],
-    });
-  }
-
-  private popup: any = null;
-
-  private hasResults = false;
-
-  get showSuggestions() {
-    return this.query || this.hasResults;
-  }
-
-  showImagePrompt(command) {
-    const src = prompt('Enter the url of your image here')
-    if (src !== null) {
-      command({src})
-    }
-  }
-
-  destroyPopup() {
-    if (this.popup) {
-      this.popup.destroy();
-      this.popup = null;
     }
   }
 
@@ -393,9 +243,16 @@ export default class Tiptap extends Vue {
   }
 
   beforeDestroy() {
-    this.destroyPopup();
     if (this.editor) {
       this.editor.destroy();
+    }
+  }
+
+  addImage() {
+    const url = window.prompt('URL')
+
+    if (url) {
+      this.editor.chain().focus().setImage({ src: url }).run()
     }
   }
 
@@ -413,25 +270,26 @@ $body-font-family: 'Roboto', '-apple-system', 'BlinkMacSystemFont', 'Helvetica N
   sans-serif, 'Microsoft YaHei', 'Source Han Sans SC', 'Noto Sans CJK SC', 'WenQuanYi Micro Hei';
 $mono-font-family: mononoki, Consolas, Liberation Mono, Courier, monospace !important;
 
-.menububble {
-  position: absolute;
-  display: flex;
-  z-index: 20;
-  background: $color-black;
-  border-radius: 5px;
-  padding: 0.3rem;
-  margin-bottom: 0.5rem;
-  transform: translateX(-50%);
-  visibility: hidden;
-  opacity: 0;
-  transition: opacity 0.2s, visibility 0.2s;
-
-  &.is-active {
-    opacity: 1;
-    visibility: visible;
+::v-deep {
+  /* Basic editor styles */
+  .ProseMirror {
+    > * + * {
+      margin-top: 0.75em;
+    }
   }
 
-  &__button {
+  /* Placeholder (at the top) */
+  .ProseMirror p.is-editor-empty:first-child::before {
+    content: attr(data-placeholder);
+    float: left;
+    color: #ced4da;
+    pointer-events: none;
+    height: 0;
+  }
+}
+
+.menububble {
+  button {
     display: inline-flex;
     background: transparent;
     border: 0;
@@ -452,18 +310,6 @@ $mono-font-family: mononoki, Consolas, Liberation Mono, Courier, monospace !impo
     &.is-active {
       background-color: rgba($color-white, 0.2);
     }
-  }
-
-  &__form {
-    display: flex;
-    align-items: center;
-  }
-
-  &__input {
-    font: inherit;
-    border: none;
-    background: transparent;
-    color: $color-white;
   }
 }
 
@@ -619,52 +465,8 @@ $mono-font-family: mononoki, Consolas, Liberation Mono, Courier, monospace !impo
 }
 
 .mention {
-  white-space: nowrap;
   font-family: $body-font-family;
-}
-.mention-suggestion {
-  color: rgba($color-black, 0.6);
-}
-.suggestion-list {
-  padding: 0.2rem;
-  border: 2px solid rgba($color-black, 0.1);
-
-  &__no-results {
-    padding: 0.2rem 0.5rem;
-  }
-  &__item {
-    border-radius: 5px;
-    padding: 0.2rem 0.5rem;
-    margin-bottom: 0.2rem;
-    cursor: pointer;
-    font-family: $body-font-family;
-
-    &:last-child {
-      margin-bottom: 0;
-    }
-    &.is-selected,
-    &:hover {
-      background-color: rgba($color-white, 0.2);
-    }
-    &.is-empty {
-      opacity: 0.5;
-    }
-  }
-}
-
-.tippy-box[data-theme~='dark'] {
-  background-color: $color-black;
-  padding: 0;
-  text-align: inherit;
-  color: $color-white;
-  border-radius: 5px;
-}
-
-.tiptap-editor p.is-editor-empty:first-child::before {
-  content: attr(data-empty-text);
-  float: left;
-  color: #aaa;
-  pointer-events: none;
-  height: 0;
+  text-decoration: none;
+  color: #1976d2;
 }
 </style>

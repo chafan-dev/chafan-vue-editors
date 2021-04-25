@@ -1,8 +1,6 @@
 <template>
   <div id="app">
-    <Tiptap ref="tiptap" :upload="upload" :search-users="searchUsers" :user-label="userLabel" :user-href="userHref" v-slot="{ user }">
-      {{ user.label }}
-    </Tiptap>
+    <Tiptap ref="tiptap" :upload="upload" :search-users="searchUsers" :user-label="userLabel" :user-href="userHref" />
   </div>
 </template>
 
@@ -45,6 +43,7 @@ export default class ServeDev extends Vue {
   }
 
   userLabel(user: any) {
+    console.log(user);
     return user.label;
   }
 
