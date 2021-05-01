@@ -144,11 +144,10 @@ export default class Tiptap extends Vue {
   mounted() {
     const userLabel = this.userLabel;
     const userHref = this.userHref;
-    const contentElem = this.$el.getElementsByClassName("editor__content")[0] as HTMLElement;
     this.editor = new Editor({
       onCreate: () => {
         if (this.onEditorReady) {
-          this.onEditorReady(contentElem);
+          this.onEditorReady(this.$el.getElementsByClassName("editor__content")[0] as HTMLElement);
         }
       },
       content: this.jsonBody,
