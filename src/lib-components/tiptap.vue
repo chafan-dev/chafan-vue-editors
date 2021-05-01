@@ -4,7 +4,7 @@
       <BubbleMenu
           class="menububble"
           :editor="editor"
-          v-if="editor"
+          v-if="editor && editable"
       >
           <button @click="editor.chain().focus().toggleBold().run()" :class="{ 'is-active': editor.isActive('bold') }">
             B
@@ -282,22 +282,24 @@ $body-font-family: 'Roboto', '-apple-system', 'BlinkMacSystemFont', 'Helvetica N
   sans-serif, 'Microsoft YaHei', 'Source Han Sans SC', 'Noto Sans CJK SC', 'WenQuanYi Micro Hei';
 $mono-font-family: mononoki, Consolas, Liberation Mono, Courier, monospace !important;
 
-::v-deep {
-  /* Basic editor styles */
-  .ProseMirror {
-    > * + * {
-      margin-top: 0.75em;
-    }
+/* Basic editor styles */
+.ProseMirror {
+  > * + * {
+    margin-top: 0.75em;
   }
+  p {
+    margin: 0;
+  }
+}
 
-  /* Placeholder (at the top) */
-  .ProseMirror p.is-editor-empty:first-child::before {
-    content: attr(data-placeholder);
-    float: left;
-    color: #ced4da;
-    pointer-events: none;
-    height: 0;
-  }
+
+/* Placeholder (at the top) */
+.ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: #ced4da;
+  pointer-events: none;
+  height: 0;
 }
 
 .menububble {

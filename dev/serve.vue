@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <Tiptap ref="tiptap" :upload="upload" :search-users="searchUsers" :user-label="userLabel" :user-href="userHref" />
+    <Tiptap ref="tiptap" :upload="upload" :search-users="searchUsers" :user-label="userLabel" :user-href="userHref" placeholder="Enter here..." />
     <hr />
     <Tiptap :body="body" :editable="false" />
   </div>
