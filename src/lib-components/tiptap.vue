@@ -4,7 +4,7 @@
       <BubbleMenu
           class="menububble"
           :editor="editor"
-          v-if="editor && editable"
+          v-if="editable"
       >
           <button @click="editor.chain().focus().toggleBold().run()" :class="{ 'is-active': editor.isActive('bold') }">
             B
@@ -17,9 +17,6 @@
           </button>
           <button @click="editor.chain().focus().toggleCodeBlock().run()" :class="{ 'is-active': editor.isActive('codeBlock') }">
             Code
-          </button>
-          <button @click="addImage">
-            Image
           </button>
       </BubbleMenu>
 
@@ -90,6 +87,7 @@ lowlight.registerLanguage('markdow', markdown);
 
 
 import ImageUpload from '@/extensions/ImageUpload';
+import Iframe from "@/extensions/Iframe";
 
 import tippy from 'tippy.js';
 import * as _ from 'lodash';
@@ -102,6 +100,10 @@ const EMPTY_DOCUMENT = {
     type: 'paragraph',
   }],
 };
+
+export interface ITiptapDialogController {
+  onUrl: ((url: string) => void) | undefined,
+}
 
 @Component({
   components: {
@@ -123,6 +125,8 @@ export default class Tiptap extends Vue {
   @Prop() public readonly bodyFormat: 'html' | 'tiptap_json' | undefined;
   @Prop() public readonly body: string | undefined;
   @Prop() public readonly upload: ((blob: Blob) => Promise<string>) | undefined;
+  @Prop() public readonly videoDialogController: ITiptapDialogController | undefined;
+  @Prop() public readonly imageDialogController: ITiptapDialogController | undefined;
 
   private editor: any = null;
 
@@ -144,6 +148,7 @@ export default class Tiptap extends Vue {
       extensions: [
           Underline,
           Link,
+          Iframe,
           Placeholder.configure({
             emptyEditorClass: 'is-editor-empty',
             emptyNodeClass: 'is-empty',
@@ -228,6 +233,12 @@ export default class Tiptap extends Vue {
         this.loadHTML(this.body);
       }
     }
+    if (this.videoDialogController) {
+      this.videoDialogController.onUrl = this.addVideo;
+    }
+    if (this.imageDialogController) {
+      this.imageDialogController.onUrl = this.addImage;
+    }
   }
 
   public loadHTML(htmlBody: string) {
@@ -260,12 +271,16 @@ export default class Tiptap extends Vue {
     }
   }
 
-  addImage() {
-    const url = window.prompt('URL')
+  addImage(url: string) {
+    this.editor.chain().focus().setImage({ src: url }).run()
+  }
 
-    if (url) {
-      this.editor.chain().focus().setImage({ src: url }).run()
-    }
+  addVideo(url: string) {
+    this.editor.chain().focus().setIframe({
+      src: url,
+      height: 315,
+      width: 500
+    }).run()
   }
 
   public reset() {
