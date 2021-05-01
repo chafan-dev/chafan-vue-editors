@@ -112,7 +112,6 @@ const EMPTY_DOCUMENT = {
 export default class Tiptap extends Vue {
   @Prop() public readonly onEditorChange: ((body: string) => void) | undefined;
   @Prop({ default: true }) public readonly editable!: boolean;
-  @Prop() public readonly initialValue: string | undefined;
   @Prop() public readonly placeholder: string | undefined;
   @Prop({ default: false }) public readonly commentMode!: boolean;
 
@@ -127,11 +126,21 @@ export default class Tiptap extends Vue {
 
   private editor: any = null;
 
+  get jsonBody() {
+    if (!this.body) {
+      return undefined;
+    }
+    if (!this.bodyFormat || this.bodyFormat === 'tiptap_json') {
+      return JSON.parse(this.body);
+    }
+    return undefined;
+  }
+
   mounted() {
     const userLabel = this.userLabel;
     const userHref = this.userHref;
     this.editor = new Editor({
-      content: this.initialValue ? JSON.parse(this.initialValue) : undefined,
+      content: this.jsonBody,
       extensions: [
           Underline,
           Link,

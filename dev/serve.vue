@@ -1,6 +1,8 @@
 <template>
   <div id="app">
     <Tiptap ref="tiptap" :upload="upload" :search-users="searchUsers" :user-label="userLabel" :user-href="userHref" />
+    <hr />
+    <Tiptap :body="body" :editable="false" />
   </div>
 </template>
 
@@ -14,10 +16,7 @@ import 'tippy.js/dist/tippy.css';
   components: { Tiptap }
 })
 export default class ServeDev extends Vue {
-  public mounted() {
-    const editor = (this.$refs.tiptap as Tiptap)
-    console.log(editor.getJSON());
-  }
+  readonly body = JSON.stringify({"type":"doc","content":[{"type":"paragraph","content":[{"type":"text","text":"test"}]}]});
 
   async upload(blob: Blob) {
     let formData = new FormData();
