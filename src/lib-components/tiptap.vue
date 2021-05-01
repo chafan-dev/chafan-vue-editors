@@ -127,6 +127,7 @@ export default class Tiptap extends Vue {
   @Prop() public readonly upload: ((blob: Blob) => Promise<string>) | undefined;
   @Prop() public readonly videoDialogController: ITiptapDialogController | undefined;
   @Prop() public readonly imageDialogController: ITiptapDialogController | undefined;
+  @Prop() public readonly onEditorReady: ((contentElem: HTMLElement) => void) | undefined;
 
   private editor: any = null;
 
@@ -143,7 +144,13 @@ export default class Tiptap extends Vue {
   mounted() {
     const userLabel = this.userLabel;
     const userHref = this.userHref;
+    const contentElem = this.$el.getElementsByClassName("editor__content")[0] as HTMLElement;
     this.editor = new Editor({
+      onCreate: () => {
+        if (this.onEditorReady) {
+          this.onEditorReady(contentElem);
+        }
+      },
       content: this.jsonBody,
       extensions: [
           Underline,
