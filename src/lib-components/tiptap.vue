@@ -112,6 +112,7 @@ export interface ITiptapDialogController {
   },
 })
 export default class Tiptap extends Vue {
+export default class Tiptap extends Vue {
   @Prop() public readonly onEditorChange: ((body: string) => void) | undefined;
   @Prop({ default: true }) public readonly editable!: boolean;
   @Prop() public readonly placeholder: string | undefined;
@@ -252,7 +253,7 @@ export default class Tiptap extends Vue {
   }
 
   public getText() {
-    return this.$el.querySelector('.editor__content')!.textContent || '';
+    return (this.$el.querySelector('.editor__content')! as HTMLElement).innerText || '';
   }
 
   public getJSON(): object | null {
