@@ -1,19 +1,21 @@
 <html>
-<head>
-    <script src="https://unpkg.com/vue@2.6.12"></script>
-    <script src="https://unpkg.com/chafan-vue-editors@0.2.0"></script>
-</head>
-<body>
-    <div id="app">
-        <tiptap></tiptap>
-    </div>
-</body>
-<script>
-    var app = new Vue({
-        el: '#app',
-        components: {
-            tiptap: ChafanVueEditors.Tiptap
-        }
-    })
-</script>
+    <head>
+        <script src="https://unpkg.com/vue@2.6.12"></script>
+        <script src="https://unpkg.com/chafan-vue-editors"></script>
+        <title>Chafan Vue Editors Demo</title>
+    </head>
+    <body>
+        <h1>Chafan Vue Editors Demo</h1>
+        <div id="app">
+            <tiptap></tiptap>
+        </div>
+    </body>
+    <script>
+        var app = new Vue({
+            el: '#app',
+            components: {
+                tiptap: ChafanVueEditors.Tiptap
+            }
+        })
+    </script>
 </html>
