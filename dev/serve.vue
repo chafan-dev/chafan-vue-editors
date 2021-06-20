@@ -8,26 +8,26 @@
         Video
       </button>
     </div>
-    <Tiptap ref="tiptap" :upload="upload" :search-users="searchUsers" :user-label="userLabel"
-            :user-href="userHref" placeholder="Enter here..."
-            :on-editor-change="onEditorChange"
-            :video-dialog-controller="videoDialogController"
-            :image-dialog-controller="imageDialogController" />
+    <TiptapCF ref="tiptap" :upload="upload" :search-users="searchUsers" :user-label="userLabel"
+              :user-href="userHref" placeholder="Enter here..."
+              :on-editor-change="onEditorChange"
+              :video-dialog-controller="videoDialogController"
+              :image-dialog-controller="imageDialogController" />
     <pre><code>{{ content }}</code></pre>
     <hr />
-    <Tiptap :body="body" :editable="false" />
+    <TiptapCF :body="body" :editable="false" />
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import {Tiptap} from "@/lib-components";
+import {TiptapCF} from "@/lib-components";
 import axios from "axios";
 import 'tippy.js/dist/tippy.css';
-import {ITiptapDialogController} from "@/lib-components/tiptap.vue";
+import {ITiptapDialogController} from "@/lib-components/TiptapCF.vue";
 
 @Component({
-  components: { Tiptap }
+  components: { TiptapCF }
 })
 export default class ServeDev extends Vue {
   readonly body = JSON.stringify({
@@ -54,7 +54,7 @@ export default class ServeDev extends Vue {
   };
 
   onEditorChange() {
-    this.content = JSON.stringify((this.$refs.tiptap as Tiptap).getJSON()) || '';
+    this.content = JSON.stringify((this.$refs.tiptap as TiptapCF).getJSON()) || '';
   }
 
   showImageDialog() {
