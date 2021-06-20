@@ -6,3 +6,4 @@ export default ChafanVueEditors;
 export const TiptapCF: VueConstructor<Vue>;
 export const VditorCF: VueConstructor<Vue>;
 export const LiteVditorCF: VueConstructor<Vue>;
+export const VditorViewerCF: VueConstructor<Vue>;
