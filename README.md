@@ -32,7 +32,7 @@ import 'highlight.js/styles/github.css';
 
 ## Use in HTML directly from CDN
 
-See `examples/index.html`.
+See `docs/index.html` for an example.
 
 NOTE: Select the newest version from https://www.jsdelivr.com/package/npm/chafan-vue-editors?path=dist
 
