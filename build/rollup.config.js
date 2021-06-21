@@ -7,6 +7,7 @@ import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
 import babel from '@rollup/plugin-babel';
+import postcss from 'rollup-plugin-postcss'
 import { terser } from 'rollup-plugin-terser';
 import minimist from 'minimist';
 
@@ -32,6 +33,9 @@ const baseConfig = {
           },
         ],
       }),
+      postcss({
+        plugins: [],
+      })
     ],
     replace: {
       'process.env.NODE_ENV': JSON.stringify('production'),
@@ -45,7 +49,7 @@ const baseConfig = {
     postVue: [
       resolve({
         extensions: ['.js', '.jsx', '.ts', '.tsx', '.vue'],
-      }),
+      })
     ],
     babel: {
       exclude: 'node_modules/**',

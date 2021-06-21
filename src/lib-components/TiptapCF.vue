@@ -94,6 +94,8 @@ import * as _ from 'lodash';
 
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
+import '@/styles/main.css';
+
 const EMPTY_DOCUMENT = {
   type: 'doc',
   content: [{
