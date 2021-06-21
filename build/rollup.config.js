@@ -11,6 +11,10 @@ import postcss from 'rollup-plugin-postcss'
 import { terser } from 'rollup-plugin-terser';
 import minimist from 'minimist';
 
+import autoprefixer from 'autoprefixer';
+import tailwind from 'tailwindcss';
+import purgecss from '@fullhuman/postcss-purgecss';
+
 // Get browserslist config and remove ie from es build targets
 const esbrowserslist = fs.readFileSync('./.browserslistrc')
   .toString()
@@ -34,7 +38,15 @@ const baseConfig = {
         ],
       }),
       postcss({
-        plugins: [],
+        extract: true,
+        plugins: [
+          autoprefixer(),
+          tailwind(),
+          purgecss({
+            content: ['./static/index.html', './src/**/*.vue'],
+            defaultExtractor: content => content.match(/[\w-/:]+(?<!:)/g) || []
+          }),
+        ],
       })
     ],
     replace: {

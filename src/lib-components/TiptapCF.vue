@@ -30,25 +30,28 @@
         </Dialog>
 
         <!-- Fixed menu -->
-        <div v-if="!commentMode" class="flex space-x-0.5 p-1">
-          <Btn @click="editor.chain().focus().toggleBold().run()" :active="editor.isActive('bold')">
-            <BoldIcon />
-          </Btn>
-          <Btn @click="editor.chain().focus().toggleItalic().run()" :active="editor.isActive('italic')">
-            <ItalicIcon />
-          </Btn>
-          <Btn @click="editor.chain().focus().toggleStrike().run()" :active="editor.isActive('strike')">
-            <StrikethroughIcon />
-          </Btn>
-          <Btn @click="editor.chain().focus().toggleCodeBlock().run()" :active="editor.isActive('codeBlock')">
-            <CodeBlockIcon />
-          </Btn>
-          <Btn @click="showImageDialog = true">
-            <ImageIcon />
-          </Btn>
-          <Btn @click="showVideoDialog = true">
-            <VideoIcon />
-          </Btn>
+        <div v-if="!commentMode" >
+          <div class="flex space-x-0.5 p-1">
+            <Btn @click="editor.chain().focus().toggleBold().run()" :active="editor.isActive('bold')">
+              <BoldIcon />
+            </Btn>
+            <Btn @click="editor.chain().focus().toggleItalic().run()" :active="editor.isActive('italic')">
+              <ItalicIcon />
+            </Btn>
+            <Btn @click="editor.chain().focus().toggleStrike().run()" :active="editor.isActive('strike')">
+              <StrikethroughIcon />
+            </Btn>
+            <Btn @click="editor.chain().focus().toggleCodeBlock().run()" :active="editor.isActive('codeBlock')">
+              <CodeBlockIcon />
+            </Btn>
+            <Btn @click="showImageDialog = true">
+              <ImageIcon />
+            </Btn>
+            <Btn @click="showVideoDialog = true">
+              <VideoIcon />
+            </Btn>
+          </div>
+          <hr />
         </div>
         <BubbleMenu :editor="editor" v-if="commentMode">
             <Btn @click="editor.chain().focus().toggleBold().run()"
@@ -67,7 +70,6 @@
               <StrikethroughIcon />
             </Btn>
         </BubbleMenu>
-        <hr />
       </template>
 
       <EditorContent :editor="editor" class="editor__content p-2" :class="{
