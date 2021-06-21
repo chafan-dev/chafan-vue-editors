@@ -72,10 +72,11 @@
         </BubbleMenu>
       </template>
 
-      <EditorContent :editor="editor" class="editor__content p-2" :class="{
-          'editable-comment': commentMode && editable,
-          'editable-non-comment': !commentMode && editable,
-        }" />
+      <EditorContent :editor="editor" class="editor__content" :class="{
+        'p-2': editable,
+        'editable-comment': commentMode && editable,
+        'editable-non-comment': !commentMode && editable,
+      }" />
     </div>
   </div>
 </template>
