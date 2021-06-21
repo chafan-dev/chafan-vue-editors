@@ -1,45 +1,75 @@
 <template>
   <div class="tiptap-editor">
     <div v-if="editor" class="border-2 border-black rounded">
-      <!-- Fixed menu -->
-      <div v-if="!commentMode" class="flex space-x-0.5 p-1">
-        <Btn @click="editor.chain().focus().toggleBold().run()" :active="editor.isActive('bold')">
-          <BoldIcon />
-        </Btn>
-        <Btn @click="editor.chain().focus().toggleItalic().run()" :active="editor.isActive('italic')">
-          <ItalicIcon />
-        </Btn>
-        <Btn @click="editor.chain().focus().toggleStrike().run()" :active="editor.isActive('strike')">
-          <StrikethroughIcon />
-        </Btn>
-        <Btn @click="editor.chain().focus().toggleCodeBlock().run()" :active="editor.isActive('codeBlock')">
-          <CodeBlockIcon />
-        </Btn>
-        <Btn @click="addImage(getImageUrl())">
-          <ImageIcon />
-        </Btn>
-        <Btn @click="addVideo(getVideoUrl())">
-          <VideoIcon />
-        </Btn>
-      </div>
-      <BubbleMenu :editor="editor" v-if="editable && commentMode">
-          <Btn @click="editor.chain().focus().toggleBold().run()"
-               :active="editor.isActive('bold')"
-               color="dark">
+      <template v-if="editable">
+        <Dialog @confirm="insertImage" @cancel="showImageDialog = false" v-if="showImageDialog">
+          <template v-slot:title>
+            <h1>添加图片</h1>
+          </template>
+          <template v-slot:content>
+            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                   v-model="insertImageUrl"
+                   type="text" placeholder="图片 URL">
+          </template>
+        </Dialog>
+
+        <Dialog @confirm="insertVideo" @cancel="showVideoDialog = false" v-if="showVideoDialog">
+          <template v-slot:title>
+            <h1>添加视频</h1>
+          </template>
+          <template v-slot:content>
+            <div class="space-y-3">
+              <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                     v-model="youtubeUrl"
+                     type="text" placeholder="YouTube URL">
+              <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                     v-model="bilibiliEmbedCode"
+                     type="text" placeholder="哔哩哔哩 Embed Code">
+            </div>
+          </template>
+        </Dialog>
+
+        <!-- Fixed menu -->
+        <div v-if="!commentMode" class="flex space-x-0.5 p-1">
+          <Btn @click="editor.chain().focus().toggleBold().run()" :active="editor.isActive('bold')">
             <BoldIcon />
           </Btn>
-          <Btn color="dark"
-               @click="editor.chain().focus().toggleItalic().run()"
-               :active="editor.isActive('italic')">
+          <Btn @click="editor.chain().focus().toggleItalic().run()" :active="editor.isActive('italic')">
             <ItalicIcon />
           </Btn>
-          <Btn color="dark"
-               @click="editor.chain().focus().toggleStrike().run()"
-               :active="editor.isActive('strike')">
+          <Btn @click="editor.chain().focus().toggleStrike().run()" :active="editor.isActive('strike')">
             <StrikethroughIcon />
           </Btn>
-      </BubbleMenu>
-      <hr />
+          <Btn @click="editor.chain().focus().toggleCodeBlock().run()" :active="editor.isActive('codeBlock')">
+            <CodeBlockIcon />
+          </Btn>
+          <Btn @click="showImageDialog = true">
+            <ImageIcon />
+          </Btn>
+          <Btn @click="showVideoDialog = true">
+            <VideoIcon />
+          </Btn>
+        </div>
+        <BubbleMenu :editor="editor" v-if="commentMode">
+            <Btn @click="editor.chain().focus().toggleBold().run()"
+                 :active="editor.isActive('bold')"
+                 color="dark">
+              <BoldIcon />
+            </Btn>
+            <Btn color="dark"
+                 @click="editor.chain().focus().toggleItalic().run()"
+                 :active="editor.isActive('italic')">
+              <ItalicIcon />
+            </Btn>
+            <Btn color="dark"
+                 @click="editor.chain().focus().toggleStrike().run()"
+                 :active="editor.isActive('strike')">
+              <StrikethroughIcon />
+            </Btn>
+        </BubbleMenu>
+        <hr />
+      </template>
+
       <EditorContent :editor="editor" class="editor__content p-2" :class="{
           'editable-comment': commentMode && editable,
           'editable-non-comment': !commentMode && editable,
@@ -121,6 +151,8 @@ import CodeBlockIcon from "@/widgets/CodeBlockIcon.vue";
 import BoldIcon from "@/widgets/BoldIcon.vue";
 import ItalicIcon from "@/widgets/ItalicIcon.vue";
 import StrikethroughIcon from "@/widgets/StrikethroughIcon.vue";
+import Dialog from "@/widgets/Dialog.vue";
+import getYouTubeID from 'get-youtube-id';
 
 const EMPTY_DOCUMENT = {
   type: 'doc',
@@ -131,6 +163,7 @@ const EMPTY_DOCUMENT = {
 
 @Component({
   components: {
+    Dialog,
     StrikethroughIcon,
     ItalicIcon,
     BoldIcon,
@@ -144,8 +177,6 @@ const EMPTY_DOCUMENT = {
 })
 export default class TiptapCF extends Vue {
   @Prop() public readonly onEditorChange: ((body: string) => void) | undefined;
-  @Prop() public readonly getVideoUrl: (() => string) | undefined;
-  @Prop() public readonly getImageUrl: (() => string) | undefined;
 
   @Prop({ default: true }) public readonly editable!: boolean;
   @Prop() public readonly placeholder: string | undefined;
@@ -162,6 +193,43 @@ export default class TiptapCF extends Vue {
   @Prop() public readonly onEditorReady: ((contentElem: HTMLElement) => void) | undefined;
 
   private editor: any = null;
+
+  private showVideoDialog = false;
+  private showImageDialog = false;
+  private insertImageUrl = '';
+
+  private insertImage() {
+    this.addImage(this.insertImageUrl);
+    this.showImageDialog = false;
+  }
+
+  private youtubeUrl = '';
+  private bilibiliEmbedCode = '';
+
+  private insertVideo() {
+    let url = '';
+    if (this.youtubeUrl) {
+      const youtubeId = getYouTubeID(this.youtubeUrl);
+      if (youtubeId) {
+        url = `https://www.youtube.com/embed/${youtubeId}`;
+      }
+    } else if (this.bilibiliEmbedCode) {
+      const bilibiliEmbedDOM = new DOMParser().parseFromString(this.bilibiliEmbedCode, 'text/html');
+      const iframe = bilibiliEmbedDOM.getElementsByTagName('iframe')[0];
+      if (iframe) {
+        const iframeUrl = new URL(iframe.src);
+        if (iframeUrl.hostname === 'player.bilibili.com') {
+          url = iframeUrl.href;
+        }
+      }
+    }
+
+    if (!url) {
+      return;
+    }
+    this.addVideo(url);
+    this.showVideoDialog = false;
+  }
 
   get jsonBody() {
     if (!this.body) {

@@ -6,9 +6,7 @@
       <TiptapCF ref="tiptap" :upload="upload" :search-users="searchUsers" :user-label="userLabel"
                 :commentMode="commentMode"
                 :user-href="userHref" placeholder="Enter here..."
-                :on-editor-change="onEditorChange"
-                :get-image-url="getImageUrl"
-                :get-video-url="getVideoUrl" />
+                :on-editor-change="onEditorChange" />
       <div>
         <h2>数据</h2>
         <pre v-if="content"><code>{{ content }}</code></pre>
@@ -81,14 +79,6 @@ export default class ServeDev extends Vue {
 
   userHref(user: any) {
     return user.href;
-  }
-
-  getImageUrl() {
-    return window.prompt('图片 URL');
-  }
-
-  getVideoUrl() {
-    return window.prompt('视频 URL');
   }
 }
 </script>
