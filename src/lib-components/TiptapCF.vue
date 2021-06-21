@@ -194,11 +194,11 @@ export default class TiptapCF extends Vue {
 
   private editor: any = null;
 
-  private showVideoDialog = false;
-  private showImageDialog = false;
+  showVideoDialog = false;
+  showImageDialog = false;
   private insertImageUrl = '';
 
-  private insertImage() {
+  insertImage() {
     this.addImage(this.insertImageUrl);
     this.showImageDialog = false;
   }
@@ -206,7 +206,7 @@ export default class TiptapCF extends Vue {
   private youtubeUrl = '';
   private bilibiliEmbedCode = '';
 
-  private insertVideo() {
+  insertVideo() {
     let url = '';
     if (this.youtubeUrl) {
       const youtubeId = getYouTubeID(this.youtubeUrl);
