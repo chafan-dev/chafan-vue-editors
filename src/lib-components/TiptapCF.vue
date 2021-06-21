@@ -1,6 +1,6 @@
 <template>
   <div class="tiptap-editor">
-    <div v-if="editor" :class="{'border border-black rounded': !commentMode}">
+    <div v-if="editor" :class="{'border border-black rounded': editable}">
       <template v-if="editable">
         <Dialog @confirm="insertImage" @cancel="showImageDialog = false" v-if="showImageDialog">
           <template v-slot:title>
