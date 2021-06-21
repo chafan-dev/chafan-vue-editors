@@ -1,27 +1,46 @@
 <template>
   <div class="tiptap-editor">
-    <div v-if="editor">
-      <BubbleMenu
-          class="menububble"
-          :editor="editor"
-          v-if="editable"
-      >
-          <button @click="editor.chain().focus().toggleBold().run()" :class="{ 'is-active': editor.isActive('bold') }">
-            B
-          </button>
-          <button @click="editor.chain().focus().toggleItalic().run()" :class="{ 'is-active': editor.isActive('italic') }">
-            I
-          </button>
-          <button @click="editor.chain().focus().toggleStrike().run()" :class="{ 'is-active': editor.isActive('strike') }">
-            S
-          </button>
-          <button @click="editor.chain().focus().toggleCodeBlock().run()" :class="{ 'is-active': editor.isActive('codeBlock') }">
-            Code
-          </button>
+    <div v-if="editor" class="border-2 border-black rounded">
+      <!-- Fixed menu -->
+      <div v-if="!commentMode" class="flex space-x-0.5 p-1">
+        <Btn @click="editor.chain().focus().toggleBold().run()" :active="editor.isActive('bold')">
+          <BoldIcon />
+        </Btn>
+        <Btn @click="editor.chain().focus().toggleItalic().run()" :active="editor.isActive('italic')">
+          <ItalicIcon />
+        </Btn>
+        <Btn @click="editor.chain().focus().toggleStrike().run()" :active="editor.isActive('strike')">
+          <StrikethroughIcon />
+        </Btn>
+        <Btn @click="editor.chain().focus().toggleCodeBlock().run()" :active="editor.isActive('codeBlock')">
+          <CodeBlockIcon />
+        </Btn>
+        <Btn @click="addImage(getImageUrl())">
+          <ImageIcon />
+        </Btn>
+        <Btn @click="addVideo(getVideoUrl())">
+          <VideoIcon />
+        </Btn>
+      </div>
+      <BubbleMenu :editor="editor" v-if="editable && commentMode">
+          <Btn @click="editor.chain().focus().toggleBold().run()"
+               :active="editor.isActive('bold')"
+               color="dark">
+            <BoldIcon />
+          </Btn>
+          <Btn color="dark"
+               @click="editor.chain().focus().toggleItalic().run()"
+               :active="editor.isActive('italic')">
+            <ItalicIcon />
+          </Btn>
+          <Btn color="dark"
+               @click="editor.chain().focus().toggleStrike().run()"
+               :active="editor.isActive('strike')">
+            <StrikethroughIcon />
+          </Btn>
       </BubbleMenu>
-
-      <EditorContent :editor="editor" class="editor__content" :class="{
-          'editable-editor-content': editable,
+      <hr />
+      <EditorContent :editor="editor" class="editor__content p-2" :class="{
           'editable-comment': commentMode && editable,
           'editable-non-comment': !commentMode && editable,
         }" />
@@ -95,6 +114,13 @@ import * as _ from 'lodash';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import '@/styles/main.css';
+import Btn from "@/widgets/Btn.vue";
+import ImageIcon from "@/widgets/ImageIcon.vue";
+import VideoIcon from "@/widgets/VideoIcon.vue";
+import CodeBlockIcon from "@/widgets/CodeBlockIcon.vue";
+import BoldIcon from "@/widgets/BoldIcon.vue";
+import ItalicIcon from "@/widgets/ItalicIcon.vue";
+import StrikethroughIcon from "@/widgets/StrikethroughIcon.vue";
 
 const EMPTY_DOCUMENT = {
   type: 'doc',
@@ -103,18 +129,24 @@ const EMPTY_DOCUMENT = {
   }],
 };
 
-export interface ITiptapDialogController {
-  onUrl: ((url: string) => void) | undefined,
-}
-
 @Component({
   components: {
+    StrikethroughIcon,
+    ItalicIcon,
+    BoldIcon,
+    CodeBlockIcon,
+    VideoIcon,
+    ImageIcon,
+    Btn,
     EditorContent,
     BubbleMenu,
   },
 })
 export default class TiptapCF extends Vue {
   @Prop() public readonly onEditorChange: ((body: string) => void) | undefined;
+  @Prop() public readonly getVideoUrl: (() => string) | undefined;
+  @Prop() public readonly getImageUrl: (() => string) | undefined;
+
   @Prop({ default: true }) public readonly editable!: boolean;
   @Prop() public readonly placeholder: string | undefined;
   @Prop({ default: false }) public readonly commentMode!: boolean;
@@ -127,8 +159,6 @@ export default class TiptapCF extends Vue {
   @Prop() public readonly bodyFormat: 'html' | 'tiptap_json' | undefined;
   @Prop() public readonly body: string | undefined;
   @Prop() public readonly upload: ((blob: Blob) => Promise<string>) | undefined;
-  @Prop() public readonly videoDialogController: ITiptapDialogController | undefined;
-  @Prop() public readonly imageDialogController: ITiptapDialogController | undefined;
   @Prop() public readonly onEditorReady: ((contentElem: HTMLElement) => void) | undefined;
 
   private editor: any = null;
@@ -241,12 +271,6 @@ export default class TiptapCF extends Vue {
         this.loadHTML(this.body);
       }
     }
-    if (this.videoDialogController) {
-      this.videoDialogController.onUrl = this.addVideo;
-    }
-    if (this.imageDialogController) {
-      this.imageDialogController.onUrl = this.addImage;
-    }
   }
 
   public loadHTML(htmlBody: string) {
@@ -294,6 +318,8 @@ export default class TiptapCF extends Vue {
   public reset() {
     this.editor.commands.clearContent();
   }
+
+
 }
 </script>
 
@@ -325,36 +351,7 @@ $mono-font-family: mononoki, Consolas, Liberation Mono, Courier, monospace !impo
   height: 0;
 }
 
-.menububble {
-  button {
-    display: inline-flex;
-    background: transparent;
-    border: 0;
-    color: $color-white;
-    padding: 0.2rem 0.5rem;
-    margin-right: 0.2rem;
-    border-radius: 3px;
-    cursor: pointer;
-
-    &:last-child {
-      margin-right: 0;
-    }
-
-    &:hover {
-      background-color: rgba($color-white, 0.1);
-    }
-
-    &.is-active {
-      background-color: rgba($color-white, 0.2);
-    }
-  }
-}
-
 .editor {
-  position: relative;
-  max-width: 30rem;
-  margin: 0 auto 5rem auto;
-
   &__content {
     overflow-wrap: break-word;
     word-wrap: break-word;
@@ -473,20 +470,9 @@ $mono-font-family: mononoki, Consolas, Liberation Mono, Courier, monospace !impo
     }
 
     .resize-cursor {
-      cursor: ew-resize;
       cursor: col-resize;
     }
   }
-}
-
-.ProseMirror-focused {
-  outline: none !important;
-}
-
-.editable-editor-content .ProseMirror {
-  border: 1px solid lightgrey;
-  border-radius: 5px;
-  min-height: 30rem;
 }
 
 .editable-comment .ProseMirror {
@@ -497,8 +483,8 @@ $mono-font-family: mononoki, Consolas, Liberation Mono, Courier, monospace !impo
   min-height: 30rem;
 }
 
-.ProseMirror {
-  padding: 5px;
+.ProseMirror-focused {
+   outline: none !important;
 }
 
 .mention {

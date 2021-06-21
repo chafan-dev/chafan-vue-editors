@@ -1,20 +1,21 @@
 <template>
-  <div id="app">
-    <div>
-      <button @click="showImageDialog">
-        Image
-      </button>
-      <button @click="showVideoDialog">
-        Video
-      </button>
+  <div id="app" class="p-5">
+    <button @click="commentMode = false" v-if="commentMode">评论模式</button>
+    <button @click="commentMode = true" v-if="!commentMode">正常模式</button>
+    <div class="grid grid-cols-2 space-x-1">
+      <TiptapCF ref="tiptap" :upload="upload" :search-users="searchUsers" :user-label="userLabel"
+                :commentMode="commentMode"
+                :user-href="userHref" placeholder="Enter here..."
+                :on-editor-change="onEditorChange"
+                :get-image-url="getImageUrl"
+                :get-video-url="getVideoUrl" />
+      <div>
+        <h2>数据</h2>
+        <pre v-if="content"><code>{{ content }}</code></pre>
+      </div>
     </div>
-    <TiptapCF ref="tiptap" :upload="upload" :search-users="searchUsers" :user-label="userLabel"
-              :user-href="userHref" placeholder="Enter here..."
-              :on-editor-change="onEditorChange"
-              :video-dialog-controller="videoDialogController"
-              :image-dialog-controller="imageDialogController" />
-    <pre><code>{{ content }}</code></pre>
-    <hr />
+    <hr class="my-2 border-black border-1" />
+    <h2>预览</h2>
     <TiptapCF :body="body" :editable="false" />
   </div>
 </template>
@@ -24,12 +25,13 @@ import { Component, Vue } from 'vue-property-decorator';
 import {TiptapCF} from "@/lib-components";
 import axios from "axios";
 import 'tippy.js/dist/tippy.css';
-import {ITiptapDialogController} from "@/lib-components/TiptapCF.vue";
 
 @Component({
   components: { TiptapCF }
 })
 export default class ServeDev extends Vue {
+  commentMode: boolean = false;
+
   readonly body = JSON.stringify({
     "type":"doc",
     "content":[
@@ -37,38 +39,16 @@ export default class ServeDev extends Vue {
       {
         "type": "iframe",
         "attrs": {
-          "src": "https://www.youtube.com/embed/PbDcLHE5Zwk",
+          "src": "https://www.youtube.com/embed/NUYvbT6vTPs",
           "frameborder": 0,
           "allowfullscreen": true
         }
       }
     ]
   });
-  readonly videoDialogController: ITiptapDialogController = {
-    onUrl: undefined,
-  };
   content = '';
-
-  readonly imageDialogController: ITiptapDialogController = {
-    onUrl: undefined,
-  };
-
   onEditorChange() {
     this.content = JSON.stringify((this.$refs.tiptap as TiptapCF).getJSON()) || '';
-  }
-
-  showImageDialog() {
-    const url = window.prompt('URL');
-    if (this.imageDialogController.onUrl && url) {
-      this.imageDialogController.onUrl(url);
-    }
-  }
-
-  showVideoDialog() {
-    const url = window.prompt('URL');
-    if (this.videoDialogController.onUrl && url) {
-      this.videoDialogController.onUrl(url);
-    }
   }
 
   async upload(blob: Blob) {
@@ -102,11 +82,13 @@ export default class ServeDev extends Vue {
   userHref(user: any) {
     return user.href;
   }
+
+  getImageUrl() {
+    return window.prompt('图片 URL');
+  }
+
+  getVideoUrl() {
+    return window.prompt('视频 URL');
+  }
 }
 </script>
-
-<style>
-#app {
-  margin-top: 100px;
-}
-</style>
