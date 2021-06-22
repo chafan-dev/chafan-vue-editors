@@ -1,7 +1,4 @@
 module.exports = {
-  corePlugins: {
-    preflight: false
-  },
   prefix: 'tw-',
   purge: [
     './src/**/*.html',
