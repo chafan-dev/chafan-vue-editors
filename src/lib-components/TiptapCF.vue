@@ -1,13 +1,13 @@
 <template>
   <div class="tiptap-editor">
-    <div v-if="editor" :class="{'border border-gray-300 rounded': editable}">
+    <div v-if="editor" :class="{'tw-border tw-border-gray-300 tw-rounded': editable}">
       <template v-if="editable">
         <Dialog @confirm="insertImage" @cancel="showImageDialog = false" v-if="showImageDialog">
           <template v-slot:title>
             <h1>添加图片</h1>
           </template>
           <template v-slot:content>
-            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            <input class="tw-shadow tw-appearance-none tw-border tw-rounded tw-w-full tw-py-2 tw-px-3 tw-text-gray-700 tw-leading-tight focus:tw-outline-none focus:tw-shadow-outline"
                    v-model="insertImageUrl"
                    type="text" placeholder="图片 URL">
           </template>
@@ -18,11 +18,11 @@
             <h1>添加视频</h1>
           </template>
           <template v-slot:content>
-            <div class="space-y-3">
-              <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            <div class="tw-space-y-3">
+              <input class="tw-shadow tw-appearance-none tw-border tw-rounded tw-w-full tw-py-2 tw-px-3 tw-text-gray-700 tw-leading-tight focus:tw-outline-none focus:tw-shadow-outline"
                      v-model="youtubeUrl"
                      type="text" placeholder="YouTube URL">
-              <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              <input class="tw-shadow tw-appearance-none tw-border tw-rounded tw-w-full tw-py-2 tw-px-3 tw-text-gray-700 tw-leading-tight focus:tw-outline-none focus:tw-shadow-outline"
                      v-model="bilibiliEmbedCode"
                      type="text" placeholder="哔哩哔哩 Embed Code">
             </div>
@@ -31,7 +31,7 @@
 
         <!-- Fixed menu -->
         <div v-if="!commentMode" >
-          <div class="flex space-x-0.5 p-1">
+          <div class="tw-flex tw-space-x-0.5 tw-p-1">
             <Btn @click="editor.chain().focus().toggleBold().run()" :active="editor.isActive('bold')">
               <BoldIcon />
             </Btn>
@@ -73,7 +73,7 @@
       </template>
 
       <EditorContent :editor="editor" class="editor__content" :class="{
-        'p-2': editable,
+        'tw-p-2': editable,
         'editable-comment': commentMode && editable,
         'editable-non-comment': !commentMode && editable,
       }" />

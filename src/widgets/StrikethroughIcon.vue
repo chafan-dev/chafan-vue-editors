@@ -1,3 +1,3 @@
 <template>
-  <span class="mx-1"><s>S</s></span>
+  <span class="tw-mx-1"><s>S</s></span>
 </template>

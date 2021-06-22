@@ -1,3 +1,3 @@
 <template>
-  <span class="mx-1">B</span>
+  <span class="tw-mx-1">B</span>
 </template>
