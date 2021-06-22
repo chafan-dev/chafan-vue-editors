@@ -32,13 +32,13 @@
     "@tiptap/starter-kit": "^2.0.0-beta.34",
     "@tiptap/vue-2": "^2.0.0-beta.21",
     "core-js": "^3.10.0",
+    "get-youtube-id": "^1.0.1",
     "highlightjs": "^9.16.2",
     "lodash": "^4.17.21",
     "prosemirror-commands": "^1.1.7",
     "tippy.js": "^6.3.1",
     "vue-class-component": "^7.2.6",
-    "vue-property-decorator": "^9.1.2",
-    "get-youtube-id": "^1.0.1"
+    "vue-property-decorator": "^9.1.2"
   },
   "devDependencies": {
     "@babel/core": "^7.13.16",

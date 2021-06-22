@@ -2,23 +2,24 @@
   <div id="app" class="tw-p-5">
     <button @click="commentMode = false" v-if="commentMode">评论模式</button>
     <button @click="commentMode = true" v-if="!commentMode">正常模式</button>
-    <div class="tw-grid tw-grid-cols-2 tw-space-x-1">
-      <TiptapCF ref="tiptap" :upload="upload" :search-users="searchUsers" :user-label="userLabel"
-                :commentMode="commentMode"
-                :user-href="userHref" placeholder="Enter here..."
-                :on-editor-change="onEditorChange" />
-      <div>
-        <h2>数据</h2>
-        <pre v-if="content"><code>{{ content }}</code></pre>
+    <div class="tailwind">
+      <div class="tw-grid tw-grid-cols-2 tw-space-x-1">
+        <TiptapCF ref="tiptap" :upload="upload" :search-users="searchUsers" :user-label="userLabel"
+                  :commentMode="commentMode"
+                  :user-href="userHref" placeholder="Enter here..."
+                  :on-editor-change="onEditorChange" />
+        <div>
+          <h2>数据</h2>
+          <pre v-if="content"><code>{{ content }}</code></pre>
+        </div>
       </div>
+      <hr class="tw-my-2 tw-border-black tw-border-1" />
+      <h2>预览</h2>
+      <TiptapCF :body="body" :editable="false" />
+      <hr class="tw-my-2 tw-border-black tw-border-1" />
     </div>
-    <hr class="tw-my-2 tw-border-black tw-border-1" />
-    <h2>预览</h2>
-    <TiptapCF :body="body" :editable="false" />
-    <link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/@tailwindcss/typography@0.4.x/dist/typography.min.css"
-    />
+    <h2>Vditor Demo</h2>
+    <VditorCF ref="vditor" :is-mobile="false" :on-editor-change="() => {}" />
   </div>
 </template>
 
@@ -27,9 +28,10 @@ import { Component, Vue } from 'vue-property-decorator';
 import {TiptapCF} from "@/lib-components";
 import axios from "axios";
 import 'tippy.js/dist/tippy.css';
+import VditorCF from "@/lib-components/VditorCF.vue";
 
 @Component({
-  components: { TiptapCF }
+  components: {VditorCF, TiptapCF }
 })
 export default class ServeDev extends Vue {
   commentMode: boolean = false;
@@ -83,6 +85,10 @@ export default class ServeDev extends Vue {
 
   userHref(user: any) {
     return user.href;
+  }
+
+  mounted() {
+    (this.$refs.vditor as VditorCF).init('markdown_splitview', '');
   }
 }
 </script>

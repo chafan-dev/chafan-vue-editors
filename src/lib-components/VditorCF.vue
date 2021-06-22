@@ -1,5 +1,5 @@
 <template>
-  <div class="prose" />
+  <div />
 </template>
 
 <script lang="ts">
@@ -9,9 +9,9 @@ import Vditor from '@chafan/vditor';
 import { vditorCDN, editor_T } from '@/common';
 
 @Component
-export default class VditorComponent extends Vue {
+export default class VditorCF extends Vue {
   @Prop() public readonly onEditorChange!: (string) => void;
-  @Prop() public readonly vditorUploadConfig!: any;
+  @Prop({default: undefined}) public readonly vditorUploadConfig: any;
   @Prop() public readonly isMobile!: boolean;
 
   private allToolbarItems: any[] = [
@@ -103,7 +103,7 @@ export default class VditorComponent extends Vue {
     if (this.vditor) {
       this.vditor.destroy();
     }
-    this.vditor = new Vditor(this.$el as HTMLElement, {
+    const options: IOptions = {
       minHeight: 300,
       toolbar: this.toolBar,
       cdn: vditorCDN,
@@ -114,7 +114,6 @@ export default class VditorComponent extends Vue {
       input: (value: string) => {
         this.onEditorChange(value);
       },
-      upload: this.vditorUploadConfig,
       value: markdownBody,
       mode: this.translateMode(editorMode),
       cache: {
@@ -125,7 +124,11 @@ export default class VditorComponent extends Vue {
           this.vditor!.setValue(this.vditor!.html2md(htmlBody));
         }
       },
-    });
+    };
+    if (this.vditorUploadConfig) {
+      options.upload = this.vditorUploadConfig;
+    }
+    this.vditor = new Vditor(this.$el as HTMLElement, options);
   }
 
   public getText(): string | null {
