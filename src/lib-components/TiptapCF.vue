@@ -72,7 +72,7 @@
         </BubbleMenu>
       </template>
 
-      <EditorContent :editor="editor" class="editor__content" :class="{
+      <EditorContent :editor="editor" class="editor__content prose" :class="{
         'tw-p-2': editable,
         'editable-comment': commentMode && editable,
         'editable-non-comment': !commentMode && editable,
@@ -395,23 +395,9 @@ export default class TiptapCF extends Vue {
 </script>
 
 <style lang="scss">
-$color-black: #000000;
-$color-white: #ffffff;
-$color-grey: #dddddd;
 $body-font-family: 'Roboto', '-apple-system', 'BlinkMacSystemFont', 'Helvetica Neue', 'PingFang SC',
   sans-serif, 'Microsoft YaHei', 'Source Han Sans SC', 'Noto Sans CJK SC', 'WenQuanYi Micro Hei';
 $mono-font-family: mononoki, Consolas, Liberation Mono, Courier, monospace !important;
-
-/* Basic editor styles */
-.ProseMirror {
-  > * + * {
-    margin-top: 0.75em;
-  }
-  p {
-    margin: 0;
-  }
-}
-
 
 /* Placeholder (at the top) */
 .ProseMirror p.is-editor-empty:first-child::before {
@@ -422,128 +408,9 @@ $mono-font-family: mononoki, Consolas, Liberation Mono, Courier, monospace !impo
   height: 0;
 }
 
-.editor {
-  &__content {
-    overflow-wrap: break-word;
-    word-wrap: break-word;
-    word-break: break-word;
-    font-family: $body-font-family;
-
-    * {
-      caret-color: currentColor;
-    }
-
-    pre {
-      padding: 0.7rem 1rem;
-      border-radius: 5px;
-      background: rgba($color-grey, 0.3);
-      color: $color-black;
-      overflow-x: auto;
-
-      code {
-        display: block;
-        font-family: $mono-font-family;
-      }
-    }
-
-    p code {
-      padding: 0.2rem 0.4rem;
-      border-radius: 5px;
-      background: rgba($color-grey, 0.3);
-      color: $color-black;
-      font-family: $mono-font-family;
-    }
-
-    ul,
-    ol {
-      padding-left: 1rem;
-    }
-
-    li > p,
-    li > ol,
-    li > ul {
-      margin: 0;
-    }
-
-    a {
-      text-decoration: none;
-      color: #1976d2;
-    }
-
-    blockquote {
-      border-left: 3px solid rgba($color-black, 0.1);
-      color: rgba($color-black, 0.8);
-      padding-left: 0.8rem;
-      font-style: italic;
-
-      p {
-        margin: 0;
-      }
-    }
-
-    img {
-      max-width: 100%;
-      border-radius: 3px;
-    }
-
-    table {
-      border-collapse: collapse;
-      table-layout: fixed;
-      width: 100%;
-      margin: 0;
-      overflow: hidden;
-
-      td,
-      th {
-        min-width: 1em;
-        border: 2px solid $color-grey;
-        padding: 3px 5px;
-        vertical-align: top;
-        box-sizing: border-box;
-        position: relative;
-        > * {
-          margin-bottom: 0;
-        }
-      }
-
-      th {
-        font-weight: bold;
-        text-align: left;
-      }
-
-      .selectedCell:after {
-        z-index: 2;
-        position: absolute;
-        content: '';
-        left: 0;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        background: rgba(200, 200, 255, 0.4);
-        pointer-events: none;
-      }
-
-      .column-resize-handle {
-        position: absolute;
-        right: -2px;
-        top: 0;
-        bottom: 0;
-        width: 4px;
-        z-index: 20;
-        background-color: #adf;
-        pointer-events: none;
-      }
-    }
-
-    .tableWrapper {
-      margin: 1em 0;
-      overflow-x: auto;
-    }
-
-    .resize-cursor {
-      cursor: col-resize;
-    }
-  }
+.prose p {
+  margin-top: 0 !important;
+  margin-bottom: 0.5em !important;
 }
 
 .editable-comment .ProseMirror {
