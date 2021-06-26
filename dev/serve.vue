@@ -19,7 +19,7 @@
       <hr class="tw-my-2 tw-border-black tw-border-1" />
     </div>
     <h2>Vditor Demo</h2>
-    <VditorCF ref="vditor" :is-mobile="false" :on-editor-change="() => {}" />
+    <VditorCF ref="vditor" :is-mobile="false" :on-editor-change="() => {}" editor-mode="markdown_splitview" />
   </div>
 </template>
 
@@ -85,10 +85,6 @@ export default class ServeDev extends Vue {
 
   userHref(user: any) {
     return user.href;
-  }
-
-  mounted() {
-    (this.$refs.vditor as VditorCF).init('markdown_splitview', '');
   }
 }
 </script>

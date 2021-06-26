@@ -13,6 +13,8 @@ export default class VditorCF extends Vue {
   @Prop() public readonly onEditorChange!: (string) => void;
   @Prop({default: undefined}) public readonly vditorUploadConfig: any;
   @Prop() public readonly isMobile!: boolean;
+  @Prop() public readonly initialContent: string | undefined;
+  @Prop({ default: 'wysiwyg'}) public readonly editorMode!: editor_T;
 
   private allToolbarItems: any[] = [
     'emoji',
@@ -97,6 +99,7 @@ export default class VditorCF extends Vue {
         toolbar: toolBarMore,
       });
     }
+    this.init(this.editorMode, this.initialContent || '');
   }
 
   public init(editorMode: editor_T, markdownBody?: string, htmlBody?: string) {
