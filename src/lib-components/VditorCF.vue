@@ -10,9 +10,9 @@ import { vditorCDN, editor_T } from '@/common';
 
 @Component
 export default class VditorCF extends Vue {
-  @Prop() public readonly onEditorChange!: (string) => void;
+  @Prop() public readonly onEditorChange: ((string) => void) | undefined;
   @Prop({default: undefined}) public readonly vditorUploadConfig: any;
-  @Prop() public readonly isMobile!: boolean;
+  @Prop({default: false}) public readonly isMobile!: boolean;
   @Prop() public readonly initialContent: string | undefined;
   @Prop({ default: 'wysiwyg'}) public readonly editorMode!: editor_T;
 
@@ -115,7 +115,9 @@ export default class VditorCF extends Vue {
         actions: [],
       },
       input: (value: string) => {
-        this.onEditorChange(value);
+        if (this.onEditorChange) {
+          this.onEditorChange(value);
+        }
       },
       value: markdownBody,
       mode: this.translateMode(editorMode),

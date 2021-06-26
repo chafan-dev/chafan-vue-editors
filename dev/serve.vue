@@ -19,7 +19,7 @@
       <hr class="tw-my-2 tw-border-black tw-border-1" />
     </div>
     <h2>Vditor Demo</h2>
-    <VditorCF ref="vditor" :is-mobile="false" :on-editor-change="() => {}" editor-mode="markdown_splitview" />
+    <VditorCF editor-mode="markdown_splitview" />
   </div>
 </template>
 
