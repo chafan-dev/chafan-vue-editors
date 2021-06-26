@@ -37,6 +37,9 @@
             <Btn @click="editor.chain().focus().toggleItalic().run()" :active="editor.isActive('italic')">
               <ItalicIcon />
             </Btn>
+            <Btn @click="editor.chain().focus().toggleUnderline().run()" :active="editor.isActive('underline')">
+              <UnderlineIcon />
+            </Btn>
             <Btn @click="editor.chain().focus().toggleStrike().run()" :active="editor.isActive('strike')">
               <StrikethroughIcon />
             </Btn>
@@ -60,6 +63,11 @@
                  @click="editor.chain().focus().toggleItalic().run()"
                  :active="editor.isActive('italic')">
               <ItalicIcon />
+            </Btn>
+            <Btn color="dark"
+                 @click="editor.chain().focus().toggleUnderline().run()"
+                 :active="editor.isActive('underline')">
+              <UnderlineIcon />
             </Btn>
             <Btn color="dark"
                  @click="editor.chain().focus().toggleStrike().run()"
@@ -154,6 +162,7 @@ import ItalicIcon from "@/widgets/ItalicIcon.vue";
 import StrikethroughIcon from "@/widgets/StrikethroughIcon.vue";
 import Dialog from "@/widgets/Dialog.vue";
 import getYouTubeID from 'get-youtube-id';
+import UnderlineIcon from "@/widgets/UnderlineIcon.vue";
 
 const EMPTY_DOCUMENT = {
   type: 'doc',
@@ -164,6 +173,7 @@ const EMPTY_DOCUMENT = {
 
 @Component({
   components: {
+    UnderlineIcon,
     Dialog,
     StrikethroughIcon,
     ItalicIcon,
