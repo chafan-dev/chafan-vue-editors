@@ -248,7 +248,13 @@ export default class TiptapCF extends Vue {
     this.editor = new Editor({
       onCreate: () => {
         if (this.onEditorReady) {
-          this.onEditorReady(this.$el.getElementsByClassName("editor__content")[0] as HTMLElement);
+          const editorContentElem = this.$el.getElementsByClassName("editor__content")[0] as HTMLElement;
+          if (editorContentElem) {
+            this.onEditorReady(editorContentElem);
+          } else {
+            const domString = new XMLSerializer().serializeToString(this.$el);
+            throw `TiptapCF onCreate editorContentElem is undefined. DOM: ${domString}`;
+          }
         }
       },
       content: this.jsonBody,
