@@ -50,7 +50,7 @@
               <VideoIcon />
             </Btn>
         </div>
-        <BubbleMenu :editor="editor" v-if="commentMode">
+        <BubbleMenu :editor="editor" v-if="commentMode" class="tw-space-x-0.5">
             <Btn @click="editor.chain().focus().toggleBold().run()"
                  :active="editor.isActive('bold')"
                  color="dark">

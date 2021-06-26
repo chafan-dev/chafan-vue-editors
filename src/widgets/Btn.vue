@@ -1,6 +1,6 @@
 <template>
   <button v-on="$listeners" class="tw-p-1"
-          :class="{ 'tw-bg-black tw-text-white tw-rounded': ((active && color === 'light') || (!active && color === 'dark')),
+          :class="{ 'tw-bg-tippydark tw-text-white tw-rounded': ((active && color === 'light') || (!active && color === 'dark')),
                     'tw-bg-white tw-text-black tw-rounded': ((active && color === 'dark') || (!active && color === 'light'))}">
     <slot></slot>
   </button>
