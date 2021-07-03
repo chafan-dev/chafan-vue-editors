@@ -1,7 +1,10 @@
 <template>
   <div id="app" class="tw-p-5">
-    <button @click="commentMode = false" v-if="commentMode">评论模式</button>
-    <button @click="commentMode = true" v-if="!commentMode">正常模式</button>
+    <button @click="commentMode = !commentMode">
+      切换成
+      <span v-if="commentMode">正常模式</span>
+      <span v-else>评论模式</span>
+    </button>
     <div class="tailwind">
       <div class="tw-grid tw-grid-cols-2 tw-space-x-1">
         <TiptapCF ref="tiptap" :upload="upload" :search-users="searchUsers" :user-label="userLabel"
@@ -52,7 +55,7 @@ export default class ServeDev extends Vue {
   });
   content = '';
   onEditorChange() {
-    this.content = JSON.stringify((this.$refs.tiptap as TiptapCF).getJSON()) || '';
+    this.content = JSON.stringify((this.$refs.tiptap as TiptapCF).getJSON(), null, 2) || '';
   }
 
   async upload(blob: Blob) {

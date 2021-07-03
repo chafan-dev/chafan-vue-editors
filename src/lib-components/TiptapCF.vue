@@ -19,12 +19,25 @@
           </template>
           <template v-slot:content>
             <div class="tw-space-y-3">
-              <input class="tw-shadow tw-appearance-none tw-border tw-rounded tw-w-full tw-py-2 tw-px-3 tw-text-gray-700 tw-leading-tight focus:tw-outline-none focus:tw-shadow-outline"
+              <input class="tw-shadow tw-appearance-none tw-border tw-rounded tw-w-full tw-py-2 tw-pr-0 tw-text-gray-700 tw-leading-tight focus:tw-outline-none focus:tw-shadow-outline"
                      v-model="youtubeUrl"
                      type="text" placeholder="YouTube URL">
-              <input class="tw-shadow tw-appearance-none tw-border tw-rounded tw-w-full tw-py-2 tw-px-3 tw-text-gray-700 tw-leading-tight focus:tw-outline-none focus:tw-shadow-outline"
+              <input class="tw-shadow tw-appearance-none tw-border tw-rounded tw-w-full tw-py-2 tw-pr-0 tw-text-gray-700 tw-leading-tight focus:tw-outline-none focus:tw-shadow-outline"
                      v-model="bilibiliEmbedCode"
                      type="text" placeholder="哔哩哔哩 Embed Code">
+            </div>
+          </template>
+        </Dialog>
+
+        <Dialog @confirm="insertLink" @cancel="showLinkDialog = false" v-if="showLinkDialog">
+          <template v-slot:title>
+            <h1>插入超链接</h1>
+          </template>
+          <template v-slot:content>
+            <div class="tw-space-y-3">
+              <input class="tw-shadow tw-appearance-none tw-border tw-rounded tw-w-full tw-py-2 tw-pr-0 tw-text-gray-700 tw-leading-tight focus:tw-outline-none focus:tw-shadow-outline"
+                     v-model="linkToInsert"
+                     type="text" placeholder="https://...">
             </div>
           </template>
         </Dialog>
@@ -45,6 +58,9 @@
             </Btn>
             <Btn @click="editor.chain().focus().toggleCodeBlock().run()" :active="editor.isActive('codeBlock')">
               <CodeBlockIcon />
+            </Btn>
+            <Btn @click="detectLink({ editor })" :active="editor.isActive('codeBlock')">
+              <LinkIcon />
             </Btn>
             <Btn @click="showImageDialog = true">
               <ImageIcon />
@@ -115,7 +131,7 @@ import { Editor, EditorContent, BubbleMenu, VueRenderer } from '@tiptap/vue-2';
 import MentionList from '@/extensions/MentionList.vue';
 
 import { defaultExtensions } from '@tiptap/starter-kit'
-import Link from '@tiptap/extension-link'
+import {Link, pasteRegex} from '@tiptap/extension-link'
 import Underline from '@tiptap/extension-underline'
 import Placeholder from '@tiptap/extension-placeholder'
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight'
@@ -163,6 +179,7 @@ import StrikethroughIcon from "@/widgets/StrikethroughIcon.vue";
 import Dialog from "@/widgets/Dialog.vue";
 import getYouTubeID from 'get-youtube-id';
 import UnderlineIcon from "@/widgets/UnderlineIcon.vue";
+import LinkIcon from "@/widgets/LinkIcon.vue";
 
 const EMPTY_DOCUMENT = {
   type: 'doc',
@@ -173,6 +190,7 @@ const EMPTY_DOCUMENT = {
 
 @Component({
   components: {
+    LinkIcon,
     UnderlineIcon,
     Dialog,
     StrikethroughIcon,
@@ -205,17 +223,20 @@ export default class TiptapCF extends Vue {
 
   private editor: any = null;
 
-  showVideoDialog = false;
-  showImageDialog = false;
+  public showVideoDialog = false;
+  public showImageDialog = false;
+  public showLinkDialog = false;
+
   private insertImageUrl = '';
+  private youtubeUrl = '';
+  private bilibiliEmbedCode = '';
+  public linkToInsert: string | null = null;
 
   insertImage() {
     this.addImage(this.insertImageUrl);
+    this.insertImageUrl = '';
     this.showImageDialog = false;
   }
-
-  private youtubeUrl = '';
-  private bilibiliEmbedCode = '';
 
   insertVideo() {
     let url = '';
@@ -240,6 +261,18 @@ export default class TiptapCF extends Vue {
     }
     this.addVideo(url);
     this.showVideoDialog = false;
+    this.youtubeUrl = '';
+    this.bilibiliEmbedCode = '';
+  }
+
+  insertLink() {
+    if (this.linkToInsert && pasteRegex.test(this.linkToInsert)) {
+      this.editor.chain().focus().toggleLink({
+        href: this.linkToInsert
+      }).run()
+      this.linkToInsert = null;
+      this.showLinkDialog = false;
+    }
   }
 
   get jsonBody() {
@@ -250,6 +283,18 @@ export default class TiptapCF extends Vue {
       return JSON.parse(this.body);
     }
     return undefined;
+  }
+
+  detectLink({ editor }) {
+    const firstChildInSelection = editor.state.selection.content().content.firstChild
+    if (firstChildInSelection) {
+      const text = firstChildInSelection.textContent.trim();
+      if (pasteRegex.test(text)) {
+        return editor.commands.setLink({href: text});
+      }
+    }
+    this.showLinkDialog = true;
+    return true;
   }
 
   mounted() {
@@ -270,7 +315,13 @@ export default class TiptapCF extends Vue {
       content: this.jsonBody,
       extensions: [
           Underline,
-          Link,
+          Link.extend({
+            addKeyboardShortcuts: () => {
+              return {
+                'Mod-k': this.detectLink
+              }
+            }
+          }),
           Iframe,
           Placeholder.configure({
             emptyEditorClass: 'is-editor-empty',
