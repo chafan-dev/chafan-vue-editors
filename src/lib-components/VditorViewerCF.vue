@@ -1,5 +1,5 @@
 <template>
-  <div ref="vditorViewer" />
+  <div />
 </template>
 
 <script lang="ts">
@@ -10,16 +10,17 @@ import { vditorCDN } from '@/common';
 @Component
 export default class Viewer extends Vue {
   @Prop() private readonly body!: string;
-  @Prop() public readonly onViewerReady!: () => void;
+  @Prop() public readonly onViewerReady!: (HTMLDivElement) => void;
 
   public textContent: string | null = null;
 
   mounted() {
-    Vditor.preview(this.$refs.vditorViewer as HTMLDivElement, this.body, {
+    const vditorElem = this.$el as HTMLDivElement;
+    Vditor.preview(vditorElem, this.body, {
       mode: 'light',
       cdn: vditorCDN,
       after: () => {
-        this.onViewerReady();
+        this.onViewerReady(vditorElem);
       },
     });
   }
