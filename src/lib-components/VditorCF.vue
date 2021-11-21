@@ -6,15 +6,15 @@
 import { Component, Vue, Prop } from 'vue-property-decorator';
 
 import Vditor from '@chafan/vditor';
-import { vditorCDN, editor_T } from '@/common';
+import { vditorCDN, editor_T, getOS } from '@/common';
 
 @Component
 export default class VditorCF extends Vue {
   @Prop() public readonly onEditorChange: ((string) => void) | undefined;
-  @Prop({default: undefined}) public readonly vditorUploadConfig: any;
-  @Prop({default: false}) public readonly isMobile!: boolean;
+  @Prop({ default: undefined }) public readonly vditorUploadConfig: any;
+  @Prop({ default: false }) public readonly isMobile!: boolean;
   @Prop() public readonly initialContent: string | undefined;
-  @Prop({ default: 'wysiwyg'}) public readonly editorMode!: editor_T;
+  @Prop({ default: 'wysiwyg' }) public readonly editorMode!: editor_T;
 
   private allToolbarItems: any[] = [
     'emoji',
@@ -74,6 +74,8 @@ export default class VditorCF extends Vue {
 
   private toolBar: any[] = [];
 
+  private isFocus: boolean = false;
+
   public mounted() {
     if (!this.isMobile) {
       this.toolBar = this.allToolbarItems.slice(0, this.allToolbarItems.length - 7).concat([
@@ -86,8 +88,8 @@ export default class VditorCF extends Vue {
       const toolBarMore: any[] = [];
       for (const item of this.allToolbarItems) {
         if (
-            this.showInMobileToolBar.includes(item) ||
-            this.showInMobileToolBar.includes(item.name)
+          this.showInMobileToolBar.includes(item) ||
+          this.showInMobileToolBar.includes(item.name)
         ) {
           this.toolBar.push(item);
         } else if (item !== '|') {
@@ -119,6 +121,12 @@ export default class VditorCF extends Vue {
           this.onEditorChange(value);
         }
       },
+      focus: () => {
+        this.isFocus = true;
+      },
+      blur: () => {
+        this.isFocus = false;
+      },
       value: markdownBody,
       mode: this.translateMode(editorMode),
       cache: {
@@ -134,12 +142,30 @@ export default class VditorCF extends Vue {
       options.upload = this.vditorUploadConfig;
     }
     this.vditor = new Vditor(this.$el as HTMLElement, options);
+    window.addEventListener('keydown', this.shortCutKeyHandler);
+  }
+
+  public beforeDestroy() {
+    window.removeEventListener('keydown', this.shortCutKeyHandler);
+  }
+
+  private shortCutKeyHandler(event: KeyboardEvent) {
+    const os = getOS();
+    if (os === 'Mac OS') {
+      if (event.metaKey && event.key === 'Enter') {
+        this.isFocus && this.$emit('shortcutSubmit');
+      }
+    } else {
+      if (event.ctrlKey && event.key === 'Enter') {
+        this.isFocus && this.$emit('shortcutSubmit');
+      }
+    }
   }
 
   public getText(): string | null {
     return (
-        (this.$el.querySelectorAll(`.vditor-${this.translateMode(this.getMode())}`)[0] as HTMLElement)
-            .innerText || null
+      (this.$el.querySelectorAll(`.vditor-${this.translateMode(this.getMode())}`)[0] as HTMLElement)
+        .innerText || null
     );
   }
 
