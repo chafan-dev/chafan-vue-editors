@@ -11,10 +11,10 @@ import { vditorCDN, editor_T } from '@/common';
 @Component
 export default class VditorCF extends Vue {
   @Prop() public readonly onEditorChange: ((string) => void) | undefined;
-  @Prop({default: undefined}) public readonly vditorUploadConfig: any;
-  @Prop({default: false}) public readonly isMobile!: boolean;
+  @Prop({ default: undefined }) public readonly vditorUploadConfig: any;
+  @Prop({ default: false }) public readonly isMobile!: boolean;
   @Prop() public readonly initialContent: string | undefined;
-  @Prop({ default: 'wysiwyg'}) public readonly editorMode!: editor_T;
+  @Prop({ default: 'wysiwyg' }) public readonly editorMode!: editor_T;
 
   private allToolbarItems: any[] = [
     'emoji',
@@ -86,8 +86,8 @@ export default class VditorCF extends Vue {
       const toolBarMore: any[] = [];
       for (const item of this.allToolbarItems) {
         if (
-            this.showInMobileToolBar.includes(item) ||
-            this.showInMobileToolBar.includes(item.name)
+          this.showInMobileToolBar.includes(item) ||
+          this.showInMobileToolBar.includes(item.name)
         ) {
           this.toolBar.push(item);
         } else if (item !== '|') {
@@ -138,8 +138,8 @@ export default class VditorCF extends Vue {
 
   public getText(): string | null {
     return (
-        (this.$el.querySelectorAll(`.vditor-${this.translateMode(this.getMode())}`)[0] as HTMLElement)
-            .innerText || null
+      (this.$el.querySelectorAll(`.vditor-${this.translateMode(this.getMode())}`)[0] as HTMLElement)
+        .innerText || null
     );
   }
 
