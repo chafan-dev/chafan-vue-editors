@@ -1,10 +1,12 @@
 <template>
   <div id="app" class="tw-p-5">
+    <h2>Controllers</h2>
     <button @click="commentMode = !commentMode">
       切换成
       <span v-if="commentMode">正常模式</span>
       <span v-else>评论模式</span>
     </button>
+    <h2>Tiptap Demo</h2>
     <div class="tailwind">
       <div class="tw-grid tw-grid-cols-2 tw-space-x-1">
         <TiptapCF ref="tiptap" :upload="upload" :search-users="searchUsers" :user-label="userLabel"
@@ -22,7 +24,7 @@
       <hr class="tw-my-2 tw-border-black tw-border-1" />
     </div>
     <h2>Vditor Demo</h2>
-    <VditorCF editor-mode="markdown_splitview" />
+    <VditorCF editor-mode="markdown_splitview" @shortcutSubmit="onShortcutSubmit" />
   </div>
 </template>
 
@@ -88,6 +90,10 @@ export default class ServeDev extends Vue {
 
   userHref(user: any) {
     return user.href;
+  }
+
+  onShortcutSubmit() {
+    alert('shortcutSubmit');
   }
 }
 </script>
