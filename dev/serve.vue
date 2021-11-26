@@ -24,7 +24,14 @@
       <hr class="tw-my-2 tw-border-black tw-border-1" />
     </div>
     <h2>Vditor Demo</h2>
-    <VditorCF editor-mode="markdown_splitview" @shortcutSubmit="onShortcutSubmit" />
+    <VditorCF ref="vditor" editor-mode="markdown_splitview" @shortcutSubmit="onShortcutSubmit" />
+    <h3>VditorViewer</h3>
+    <button @click="updateVditorContent">Refresh</button>
+    <div>
+      <h2>vditor 数据</h2>
+      <pre v-if="vditorContent"><code>{{ vditorContent }}</code></pre>
+    </div>
+    <VditorViewerCF :body="vditorContent" :key="vditorContent" />
   </div>
 </template>
 
@@ -34,12 +41,14 @@ import {TiptapCF} from "@/lib-components";
 import axios from "axios";
 import 'tippy.js/dist/tippy.css';
 import VditorCF from "@/lib-components/VditorCF.vue";
+import VditorViewerCF from "@/lib-components/VditorViewerCF.vue";
 
 @Component({
-  components: {VditorCF, TiptapCF }
+  components: {VditorViewerCF, VditorCF, TiptapCF }
 })
 export default class ServeDev extends Vue {
   commentMode: boolean = false;
+  vditorContent: string = '';
 
   readonly body = JSON.stringify({
     "type":"doc",
@@ -94,6 +103,10 @@ export default class ServeDev extends Vue {
 
   onShortcutSubmit() {
     alert('shortcutSubmit');
+  }
+
+  updateVditorContent() {
+    this.vditorContent = (this.$refs.vditor as VditorCF).getContent();
   }
 }
 </script>

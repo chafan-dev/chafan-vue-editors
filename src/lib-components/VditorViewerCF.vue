@@ -22,6 +22,10 @@ export default class Viewer extends Vue {
       after: () => {
         this.onViewerReady(vditorElem);
       },
+      math: {
+        inlineDigit: true,
+        engine: 'KaTeX',
+      }
     });
   }
 }
