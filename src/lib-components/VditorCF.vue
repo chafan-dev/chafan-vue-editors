@@ -117,6 +117,9 @@ export default class VditorCF extends Vue {
       preview: {
         mode: 'both',
         actions: [],
+        math: {
+          inlineDigit: true,
+        }
       },
       input: (value: string) => {
         if (this.onEditorChange) {
