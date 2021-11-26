@@ -54,3 +54,5 @@ Update `src/lib-components/index.ts` and `chafan-vue-editors.d.ts` after adding 
 Run `yarn run build` to generate the redistributable versions.
 
 Run `yarn run serve` to launch a preview server locally.
+
+Run `npm publish --access=public` to release.
