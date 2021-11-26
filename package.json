@@ -1,6 +1,6 @@
 {
   "name": "chafan-vue-editors",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "description": "",
   "main": "dist/chafan-vue-editors.ssgr.js",
   "browser": "dist/chafan-vue-editors.esm.js",
@@ -21,7 +21,7 @@
     "build:unpkg": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format iife"
   },
   "dependencies": {
-    "@chafan/vditor": "3.8.2-chafan.3",
+    "@chafan/vditor": "3.8.3",
     "@tiptap/core": "^2.0.0-beta.38",
     "@tiptap/extension-bubble-menu": "^2.0.0-beta.9",
     "@tiptap/extension-code-block-lowlight": "^2.0.0-beta.11",
