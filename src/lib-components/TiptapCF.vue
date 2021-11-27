@@ -222,7 +222,7 @@ import swift from 'highlight.js/lib/languages/swift';
 import yaml from 'highlight.js/lib/languages/yaml';
 import markdown from 'highlight.js/lib/languages/markdown';
 
-import { mergeAttributes } from '@tiptap/core';
+import { mergeAttributes, Extension } from '@tiptap/core';
 
 import { Editor, EditorContent, BubbleMenu, VueRenderer } from '@tiptap/vue-2';
 import MentionList from '@/extensions/MentionList.vue';
@@ -402,6 +402,17 @@ export default class TiptapCF extends Vue {
   mounted() {
     const userLabel = this.userLabel;
     const userHref = this.userHref;
+    const SubmitShortCut = Extension.create({
+      name: 'submitShortCut',
+      addKeyboardShortcuts: () => {
+        return {
+          'Mod-Enter': () => {
+            this.$emit('shortcutSubmit');
+            return true;
+          },
+        };
+      },
+    });
     this.editor = new Editor({
       onCreate: () => {
         if (this.onEditorReady) {
@@ -500,6 +511,7 @@ export default class TiptapCF extends Vue {
           },
         }),
         ...defaultExtensions(),
+        SubmitShortCut,
       ],
       onUpdate: () => {
         if (this.onEditorChange) {
