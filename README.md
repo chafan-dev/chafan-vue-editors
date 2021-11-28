@@ -55,3 +55,8 @@ Run `yarn run build` to generate the redistributable versions.
 Run `yarn run serve` to launch a preview server locally.
 
 Run `npm publish --access=public` to release.
+
+## Update third-party dependencies
+
+* I froze and patch a version of vditor source code at [chafan-dev/vditor](https://github.com/chafan-dev/vditor/tree/latest-chafan).
+  See [docs/vditor.md](docs/vditor.md) for instructions on how to work with this codebase. 
