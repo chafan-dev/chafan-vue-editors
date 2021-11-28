@@ -1,5 +1,7 @@
 ## Chafan Vue Editors
 
+[![Node.js CI](https://github.com/chafan-dev/chafan-vue-editors/actions/workflows/node.js.yml/badge.svg)](https://github.com/chafan-dev/chafan-vue-editors/actions/workflows/node.js.yml)
+
 ## Use in Vue project
 
 ```bash
