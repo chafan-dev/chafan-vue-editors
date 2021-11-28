@@ -12,7 +12,8 @@
         <TiptapCF ref="tiptap" :upload="upload" :search-users="searchUsers" :user-label="userLabel"
                   :commentMode="commentMode"
                   :user-href="userHref" placeholder="Enter here..."
-                  :on-editor-change="onEditorChange" />
+                  :on-editor-change="onEditorChange"
+                  @shortcutSubmit="onShortcutSubmit" />
         <div>
           <h2>数据</h2>
           <pre v-if="content"><code>{{ content }}</code></pre>
