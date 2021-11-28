@@ -9,11 +9,17 @@
     <h2>Tiptap Demo</h2>
     <div class="tailwind">
       <div class="tw-grid tw-grid-cols-2 tw-space-x-1">
-        <TiptapCF ref="tiptap" :upload="upload" :search-users="searchUsers" :user-label="userLabel"
-                  :commentMode="commentMode"
-                  :user-href="userHref" placeholder="Enter here..."
-                  :on-editor-change="onEditorChange"
-                  @shortcutSubmit="onShortcutSubmit" />
+        <TiptapCF
+          ref="tiptap"
+          :upload="upload"
+          :search-users="searchUsers"
+          :user-label="userLabel"
+          :commentMode="commentMode"
+          :user-href="userHref"
+          placeholder="Enter here..."
+          :on-editor-change="onEditorChange"
+          @shortcutSubmit="onShortcutSubmit"
+        />
         <div>
           <h2>数据</h2>
           <pre v-if="content"><code>{{ content }}</code></pre>
@@ -38,32 +44,32 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import {TiptapCF} from "@/lib-components";
-import axios from "axios";
+import { TiptapCF } from '@/lib-components';
+import axios from 'axios';
 import 'tippy.js/dist/tippy.css';
-import VditorCF from "@/lib-components/VditorCF.vue";
-import VditorViewerCF from "@/lib-components/VditorViewerCF.vue";
+import VditorCF from '@/lib-components/VditorCF.vue';
+import VditorViewerCF from '@/lib-components/VditorViewerCF.vue';
 
 @Component({
-  components: {VditorViewerCF, VditorCF, TiptapCF }
+  components: { VditorViewerCF, VditorCF, TiptapCF },
 })
 export default class ServeDev extends Vue {
   commentMode: boolean = false;
   vditorContent: string = '';
 
   readonly body = JSON.stringify({
-    "type":"doc",
-    "content":[
-      {"type":"paragraph","content":[{"type":"text","text":"test"}]},
+    type: 'doc',
+    content: [
+      { type: 'paragraph', content: [{ type: 'text', text: 'test' }] },
       {
-        "type": "iframe",
-        "attrs": {
-          "src": "https://www.youtube.com/embed/NUYvbT6vTPs",
-          "frameborder": 0,
-          "allowfullscreen": true
-        }
-      }
-    ]
+        type: 'iframe',
+        attrs: {
+          src: 'https://www.youtube.com/embed/NUYvbT6vTPs',
+          frameborder: 0,
+          allowfullscreen: true,
+        },
+      },
+    ],
   });
   content = '';
   onEditorChange() {
@@ -74,7 +80,11 @@ export default class ServeDev extends Vue {
     let formData = new FormData();
     formData.append('file', blob);
     const headers = { 'Content-Type': 'multipart/form-data' };
-    const response = await axios.post('http://100.120.141.73:4582/api/v1/upload/images/', formData, { headers: headers });
+    const response = await axios.post(
+      'http://100.120.141.73:4582/api/v1/upload/images/',
+      formData,
+      { headers: headers }
+    );
     return response.data.msg;
   }
 
@@ -90,7 +100,7 @@ export default class ServeDev extends Vue {
         label: 'User 2',
         href: '/users/2',
       },
-    ]
+    ];
   }
 
   userLabel(user: any) {

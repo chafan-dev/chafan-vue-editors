@@ -1,11 +1,11 @@
 <template>
   <div class="items">
     <button
-        class="item"
-        :class="{ 'is-selected': index === selectedIndex }"
-        v-for="(item, index) in items"
-        :key="index"
-        @click="selectItem(index)"
+      class="item"
+      :class="{ 'is-selected': index === selectedIndex }"
+      v-for="(item, index) in items"
+      :key="index"
+      @click="selectItem(index)"
     >
       {{ userLabel(item) }}
     </button>
@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts">
-import {Component, Vue, Prop, Watch} from "vue-property-decorator";
+import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
 
 @Component
 export default class MentionList extends Vue {
@@ -23,45 +23,45 @@ export default class MentionList extends Vue {
 
   private selectedIndex = 0;
 
-  @Watch("items")
+  @Watch('items')
   watchItems() {
-   this.selectedIndex = 0
+    this.selectedIndex = 0;
   }
 
   onKeyDown({ event }) {
     if (event.key === 'ArrowUp') {
-      this.upHandler()
-      return true
+      this.upHandler();
+      return true;
     }
 
     if (event.key === 'ArrowDown') {
-      this.downHandler()
-      return true
+      this.downHandler();
+      return true;
     }
 
     if (event.key === 'Enter') {
-      this.enterHandler()
-      return true
+      this.enterHandler();
+      return true;
     }
 
-    return false
+    return false;
   }
   upHandler() {
-    this.selectedIndex = ((this.selectedIndex + this.items.length) - 1) % this.items.length
+    this.selectedIndex = (this.selectedIndex + this.items.length - 1) % this.items.length;
   }
   downHandler() {
-    this.selectedIndex = (this.selectedIndex + 1) % this.items.length
+    this.selectedIndex = (this.selectedIndex + 1) % this.items.length;
   }
 
   enterHandler() {
-    this.selectItem(this.selectedIndex)
+    this.selectItem(this.selectedIndex);
   }
 
   selectItem(index) {
-    const item = this.items[index]
+    const item = this.items[index];
 
     if (item) {
-      this.command({id: item})
+      this.command({ id: item });
     }
   }
 }
@@ -69,7 +69,7 @@ export default class MentionList extends Vue {
 
 <style lang="scss" scoped>
 $body-font-family: 'Roboto', '-apple-system', 'BlinkMacSystemFont', 'Helvetica Neue', 'PingFang SC',
-sans-serif, 'Microsoft YaHei', 'Source Han Sans SC', 'Noto Sans CJK SC', 'WenQuanYi Micro Hei';
+  sans-serif, 'Microsoft YaHei', 'Source Han Sans SC', 'Noto Sans CJK SC', 'WenQuanYi Micro Hei';
 
 .items {
   position: relative;

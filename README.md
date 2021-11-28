@@ -1,6 +1,5 @@
 ## Chafan Vue Editors
 
-
 ## Use in Vue project
 
 ```bash

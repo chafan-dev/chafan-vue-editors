@@ -25,7 +25,7 @@ export default class Viewer extends Vue {
       math: {
         inlineDigit: true,
         engine: 'KaTeX',
-      }
+      },
     });
   }
 }

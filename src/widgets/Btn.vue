@@ -1,20 +1,27 @@
 <template>
-  <button v-on="$listeners" class="tw-p-1"
-          :class="{ 'tw-bg-tippydark tw-text-white tw-rounded': ((active && color === 'light') || (!active && color === 'dark')),
-                    'tw-bg-white tw-text-black tw-rounded': ((active && color === 'dark') || (!active && color === 'light'))}">
+  <button
+    v-on="$listeners"
+    class="tw-p-1"
+    :class="{
+      'tw-bg-tippydark tw-text-white tw-rounded':
+        (active && color === 'light') || (!active && color === 'dark'),
+      'tw-bg-white tw-text-black tw-rounded':
+        (active && color === 'dark') || (!active && color === 'light'),
+    }"
+  >
     <slot></slot>
   </button>
 </template>
 
 <script lang="ts">
-import {Component, Prop, Vue} from 'vue-property-decorator';
+import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import '@/styles/main.css';
 
 @Component
 export default class Btn extends Vue {
   @Prop() public readonly active!: boolean;
-  @Prop({default: 'light'}) public readonly color!: 'light' | 'dark';
+  @Prop({ default: 'light' }) public readonly color!: 'light' | 'dark';
 }
 </script>
 

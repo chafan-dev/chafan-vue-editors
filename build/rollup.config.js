@@ -7,7 +7,7 @@ import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
 import babel from '@rollup/plugin-babel';
-import postcss from 'rollup-plugin-postcss'
+import postcss from 'rollup-plugin-postcss';
 import { terser } from 'rollup-plugin-terser';
 import minimist from 'minimist';
 
@@ -16,7 +16,8 @@ import tailwind from 'tailwindcss';
 import purgecss from '@fullhuman/postcss-purgecss';
 
 // Get browserslist config and remove ie from es build targets
-const esbrowserslist = fs.readFileSync('./.browserslistrc')
+const esbrowserslist = fs
+  .readFileSync('./.browserslistrc')
   .toString()
   .split('\n')
   .filter((entry) => entry && entry.substring(0, 2) !== 'ie');
@@ -44,10 +45,10 @@ const baseConfig = {
           tailwind(),
           purgecss({
             content: ['./static/index.html', './src/**/*.vue'],
-            defaultExtractor: content => content.match(/[\w-/:]+(?<!:)/g) || []
+            defaultExtractor: (content) => content.match(/[\w-/:]+(?<!:)/g) || [],
           }),
         ],
-      })
+      }),
     ],
     replace: {
       'process.env.NODE_ENV': JSON.stringify('production'),
@@ -61,7 +62,7 @@ const baseConfig = {
     postVue: [
       resolve({
         extensions: ['.js', '.jsx', '.ts', '.tsx', '.vue'],
-      })
+      }),
     ],
     babel: {
       exclude: 'node_modules/**',

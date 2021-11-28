@@ -119,7 +119,7 @@ export default class VditorCF extends Vue {
         actions: [],
         math: {
           inlineDigit: true,
-        }
+        },
       },
       input: (value: string) => {
         if (this.onEditorChange) {

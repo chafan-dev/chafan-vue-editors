@@ -5,53 +5,53 @@
       :class="{ 'tw-border tw-border-gray-300 tw-rounded tw-border-solid': editable }"
     >
       <template v-if="editable">
-        <Dialog @confirm="insertImage" @cancel="showImageDialog = false" v-if="showImageDialog">
+        <Dialog v-if="showImageDialog" @cancel="showImageDialog = false" @confirm="insertImage">
           <template v-slot:title>
             <h1>添加图片</h1>
           </template>
           <template v-slot:content>
             <input
-              class="tw-shadow tw-appearance-none tw-border tw-rounded tw-w-full tw-py-2 tw-px-3 tw-text-gray-700 tw-leading-tight focus:tw-outline-none focus:tw-shadow-outline"
               v-model="insertImageUrl"
-              type="text"
+              class="tw-shadow tw-appearance-none tw-border tw-rounded tw-w-full tw-py-2 tw-px-3 tw-text-gray-700 tw-leading-tight focus:tw-outline-none focus:tw-shadow-outline"
               placeholder="图片 URL"
+              type="text"
             />
           </template>
         </Dialog>
 
-        <Dialog @confirm="insertVideo" @cancel="showVideoDialog = false" v-if="showVideoDialog">
+        <Dialog v-if="showVideoDialog" @cancel="showVideoDialog = false" @confirm="insertVideo">
           <template v-slot:title>
             <h1>添加视频</h1>
           </template>
           <template v-slot:content>
             <div class="tw-space-y-3">
               <input
-                class="tw-shadow tw-appearance-none tw-border tw-rounded tw-w-full tw-py-2 tw-pr-0 tw-text-gray-700 tw-leading-tight focus:tw-outline-none focus:tw-shadow-outline"
                 v-model="youtubeUrl"
-                type="text"
+                class="tw-shadow tw-appearance-none tw-border tw-rounded tw-w-full tw-py-2 tw-pr-0 tw-text-gray-700 tw-leading-tight focus:tw-outline-none focus:tw-shadow-outline"
                 placeholder="YouTube URL"
+                type="text"
               />
               <input
-                class="tw-shadow tw-appearance-none tw-border tw-rounded tw-w-full tw-py-2 tw-pr-0 tw-text-gray-700 tw-leading-tight focus:tw-outline-none focus:tw-shadow-outline"
                 v-model="bilibiliEmbedCode"
-                type="text"
+                class="tw-shadow tw-appearance-none tw-border tw-rounded tw-w-full tw-py-2 tw-pr-0 tw-text-gray-700 tw-leading-tight focus:tw-outline-none focus:tw-shadow-outline"
                 placeholder="哔哩哔哩 Embed Code"
+                type="text"
               />
             </div>
           </template>
         </Dialog>
 
-        <Dialog @confirm="insertLink" @cancel="showLinkDialog = false" v-if="showLinkDialog">
+        <Dialog v-if="showLinkDialog" @cancel="showLinkDialog = false" @confirm="insertLink">
           <template v-slot:title>
             <h1>插入超链接</h1>
           </template>
           <template v-slot:content>
             <div class="tw-space-y-3">
               <input
-                class="tw-shadow tw-appearance-none tw-border tw-rounded tw-w-full tw-py-2 tw-pr-0 tw-text-gray-700 tw-leading-tight focus:tw-outline-none focus:tw-shadow-outline"
                 v-model="linkToInsert"
-                type="text"
+                class="tw-shadow tw-appearance-none tw-border tw-rounded tw-w-full tw-py-2 tw-pr-0 tw-text-gray-700 tw-leading-tight focus:tw-outline-none focus:tw-shadow-outline"
                 placeholder="https://..."
+                type="text"
               />
             </div>
           </template>
@@ -62,67 +62,34 @@
           v-if="!commentMode"
           class="tw-flex tw-space-x-0.5 tw-p-1 tw-border-0 tw-border-b tw-border-solid tw-border-gray-300"
         >
-          <Btn
-            @click="
-              editor
-                .chain()
-                .focus()
-                .toggleBold()
-                .run()
-            "
-            :active="editor.isActive('bold')"
-          >
+          <Btn :active="editor.isActive('bold')" @click="editor.chain().focus().toggleBold().run()">
             <BoldIcon />
           </Btn>
           <Btn
-            @click="
-              editor
-                .chain()
-                .focus()
-                .toggleItalic()
-                .run()
-            "
             :active="editor.isActive('italic')"
+            @click="editor.chain().focus().toggleItalic().run()"
           >
             <ItalicIcon />
           </Btn>
           <Btn
-            @click="
-              editor
-                .chain()
-                .focus()
-                .toggleUnderline()
-                .run()
-            "
             :active="editor.isActive('underline')"
+            @click="editor.chain().focus().toggleUnderline().run()"
           >
             <UnderlineIcon />
           </Btn>
           <Btn
-            @click="
-              editor
-                .chain()
-                .focus()
-                .toggleStrike()
-                .run()
-            "
             :active="editor.isActive('strike')"
+            @click="editor.chain().focus().toggleStrike().run()"
           >
             <StrikethroughIcon />
           </Btn>
           <Btn
-            @click="
-              editor
-                .chain()
-                .focus()
-                .toggleCodeBlock()
-                .run()
-            "
             :active="editor.isActive('codeBlock')"
+            @click="editor.chain().focus().toggleCodeBlock().run()"
           >
             <CodeBlockIcon />
           </Btn>
-          <Btn @click="detectLink({ editor })" :active="editor.isActive('codeBlock')">
+          <Btn :active="editor.isActive('codeBlock')" @click="detectLink({ editor })">
             <LinkIcon />
           </Btn>
           <Btn @click="showImageDialog = true">
@@ -132,56 +99,32 @@
             <VideoIcon />
           </Btn>
         </div>
-        <BubbleMenu :editor="editor" v-if="commentMode" class="tw-space-x-0.5">
+        <BubbleMenu v-if="commentMode" :editor="editor" class="tw-space-x-0.5">
           <Btn
-            @click="
-              editor
-                .chain()
-                .focus()
-                .toggleBold()
-                .run()
-            "
             :active="editor.isActive('bold')"
             color="dark"
+            @click="editor.chain().focus().toggleBold().run()"
           >
             <BoldIcon />
           </Btn>
           <Btn
-            color="dark"
-            @click="
-              editor
-                .chain()
-                .focus()
-                .toggleItalic()
-                .run()
-            "
             :active="editor.isActive('italic')"
+            color="dark"
+            @click="editor.chain().focus().toggleItalic().run()"
           >
             <ItalicIcon />
           </Btn>
           <Btn
-            color="dark"
-            @click="
-              editor
-                .chain()
-                .focus()
-                .toggleUnderline()
-                .run()
-            "
             :active="editor.isActive('underline')"
+            color="dark"
+            @click="editor.chain().focus().toggleUnderline().run()"
           >
             <UnderlineIcon />
           </Btn>
           <Btn
-            color="dark"
-            @click="
-              editor
-                .chain()
-                .focus()
-                .toggleStrike()
-                .run()
-            "
             :active="editor.isActive('strike')"
+            color="dark"
+            @click="editor.chain().focus().toggleStrike().run()"
           >
             <StrikethroughIcon />
           </Btn>
@@ -189,13 +132,13 @@
       </template>
 
       <EditorContent
-        :editor="editor"
-        class="editor__content"
         :class="{
           'tw-p-2': editable,
           'editable-comment': commentMode && editable,
           'editable-non-comment': !commentMode && editable,
         }"
+        :editor="editor"
+        class="editor__content"
       />
     </div>
   </div>
@@ -222,9 +165,9 @@ import swift from 'highlight.js/lib/languages/swift';
 import yaml from 'highlight.js/lib/languages/yaml';
 import markdown from 'highlight.js/lib/languages/markdown';
 
-import { mergeAttributes, Extension } from '@tiptap/core';
+import { Extension, mergeAttributes } from '@tiptap/core';
 
-import { Editor, EditorContent, BubbleMenu, VueRenderer } from '@tiptap/vue-2';
+import { BubbleMenu, Editor, EditorContent, VueRenderer } from '@tiptap/vue-2';
 import MentionList from '@/extensions/MentionList.vue';
 
 import { defaultExtensions } from '@tiptap/starter-kit';
@@ -235,26 +178,6 @@ import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
 import Mention from '@tiptap/extension-mention';
 
 import lowlight from 'lowlight/lib/core';
-lowlight.registerLanguage('javascript', javascript);
-lowlight.registerLanguage('css', css);
-lowlight.registerLanguage('c', c);
-lowlight.registerLanguage('java', java);
-lowlight.registerLanguage('python', python);
-lowlight.registerLanguage('cpp', cpp);
-lowlight.registerLanguage('csharp', csharp);
-lowlight.registerLanguage('json', json);
-lowlight.registerLanguage('sql', sql);
-lowlight.registerLanguage('typescript', typescript);
-lowlight.registerLanguage('go', go);
-lowlight.registerLanguage('ruby', ruby);
-lowlight.registerLanguage('bash', bash);
-lowlight.registerLanguage('xml', xml);
-lowlight.registerLanguage('php', php);
-lowlight.registerLanguage('rust', rust);
-lowlight.registerLanguage('swift', swift);
-lowlight.registerLanguage('yaml', yaml);
-lowlight.registerLanguage('markdow', markdown);
-
 import ImageUpload from '@/extensions/ImageUpload';
 import Iframe from '@/extensions/Iframe';
 
@@ -276,6 +199,26 @@ import Dialog from '@/widgets/Dialog.vue';
 import getYouTubeID from 'get-youtube-id';
 import UnderlineIcon from '@/widgets/UnderlineIcon.vue';
 import LinkIcon from '@/widgets/LinkIcon.vue';
+
+lowlight.registerLanguage('javascript', javascript);
+lowlight.registerLanguage('css', css);
+lowlight.registerLanguage('c', c);
+lowlight.registerLanguage('java', java);
+lowlight.registerLanguage('python', python);
+lowlight.registerLanguage('cpp', cpp);
+lowlight.registerLanguage('csharp', csharp);
+lowlight.registerLanguage('json', json);
+lowlight.registerLanguage('sql', sql);
+lowlight.registerLanguage('typescript', typescript);
+lowlight.registerLanguage('go', go);
+lowlight.registerLanguage('ruby', ruby);
+lowlight.registerLanguage('bash', bash);
+lowlight.registerLanguage('xml', xml);
+lowlight.registerLanguage('php', php);
+lowlight.registerLanguage('rust', rust);
+lowlight.registerLanguage('swift', swift);
+lowlight.registerLanguage('yaml', yaml);
+lowlight.registerLanguage('markdow', markdown);
 
 const EMPTY_DOCUMENT = {
   type: 'doc',
@@ -318,17 +261,24 @@ export default class TiptapCF extends Vue {
   @Prop() public readonly body: string | undefined;
   @Prop() public readonly upload: ((blob: Blob) => Promise<string>) | undefined;
   @Prop() public readonly onEditorReady: ((contentElem: HTMLElement) => void) | undefined;
-
-  private editor: any = null;
-
   public showVideoDialog = false;
   public showImageDialog = false;
   public showLinkDialog = false;
-
+  public linkToInsert: string | null = null;
+  private editor: any = null;
   private insertImageUrl = '';
   private youtubeUrl = '';
   private bilibiliEmbedCode = '';
-  public linkToInsert: string | null = null;
+
+  get jsonBody() {
+    if (!this.body) {
+      return undefined;
+    }
+    if (!this.bodyFormat || this.bodyFormat === 'tiptap_json') {
+      return JSON.parse(this.body);
+    }
+    return undefined;
+  }
 
   insertImage() {
     this.addImage(this.insertImageUrl);
@@ -375,16 +325,6 @@ export default class TiptapCF extends Vue {
       this.linkToInsert = null;
       this.showLinkDialog = false;
     }
-  }
-
-  get jsonBody() {
-    if (!this.body) {
-      return undefined;
-    }
-    if (!this.bodyFormat || this.bodyFormat === 'tiptap_json') {
-      return JSON.parse(this.body);
-    }
-    return undefined;
   }
 
   detectLink({ editor }) {
@@ -462,7 +402,7 @@ export default class TiptapCF extends Vue {
               let popup;
 
               return {
-                onStart: props => {
+                onStart: (props) => {
                   (props as any).userLabel = userLabel;
                   component = new VueRenderer(MentionList, {
                     parent: this,
@@ -560,11 +500,7 @@ export default class TiptapCF extends Vue {
   }
 
   addImage(url: string) {
-    this.editor
-      .chain()
-      .focus()
-      .setImage({ src: url })
-      .run();
+    this.editor.chain().focus().setImage({ src: url }).run();
   }
 
   addVideo(url: string) {
@@ -598,6 +534,7 @@ $mono-font-family: mononoki, Consolas, Liberation Mono, Courier, monospace !impo
   > * + * {
     margin-top: 0.75em;
   }
+
   p {
     margin: 0;
   }
@@ -693,6 +630,7 @@ $mono-font-family: mononoki, Consolas, Liberation Mono, Courier, monospace !impo
         vertical-align: top;
         box-sizing: border-box;
         position: relative;
+
         > * {
           margin-bottom: 0;
         }
