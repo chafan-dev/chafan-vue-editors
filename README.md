@@ -34,12 +34,10 @@ import 'highlight.js/styles/github.css';
 ```html
 <script
   defer
-  src="//cdn.jsdelivr.net/npm/@chafan/vditor@3.8.2-chafan.3/dist/js/lute/lute.min.js"
+  src="//cdn.jsdelivr.net/npm/@chafan/vditor@3.8.8-chafan.2/dist/js/lute/lute.min.js"
 ></script>
-<script
-  defer
-  src="//cdn.jsdelivr.net/npm/@chafan/vditor@3.8.2-chafan.3/dist/js/mermaid/mermaid.min.js"
-></script>
+...
+<!-- See public/index.html -->
 ```
 
 ## Use in HTML directly from CDN

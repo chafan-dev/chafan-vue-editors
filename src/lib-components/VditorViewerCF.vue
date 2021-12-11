@@ -10,7 +10,7 @@ import { vditorCDN } from '@/common';
 @Component
 export default class Viewer extends Vue {
   @Prop() private readonly body!: string;
-  @Prop() public readonly onViewerReady!: (HTMLDivElement) => void;
+  @Prop() public readonly onViewerReady!: (HTMLDivElement) => void | undefined;
 
   public textContent: string | null = null;
 
@@ -20,7 +20,9 @@ export default class Viewer extends Vue {
       mode: 'light',
       cdn: vditorCDN,
       after: () => {
-        this.onViewerReady(vditorElem);
+        if (this.onViewerReady) {
+          this.onViewerReady(vditorElem);
+        }
       },
       math: {
         inlineDigit: true,
