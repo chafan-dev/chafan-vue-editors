@@ -21,7 +21,8 @@ go get -u github.com/gopherjs/gopherjs
 go get golang.org/dl/go1.12.16
 go1.12.16 download
 export GOPHERJS_GOROOT="$(go1.12.16 env GOROOT)"
-ln -s $PWD $(go env GOPATH)/src/github.com/88250/lute
+mkdir $(go env GOPATH)/src/github.com/chafan-dev/
+ln -s $PWD $(go env GOPATH)/src/github.com/chafan-dev/lute
 cd javascript/
 rm lute.min.js lute.min.js.map
 bash build.sh
