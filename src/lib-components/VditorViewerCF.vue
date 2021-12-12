@@ -12,8 +12,6 @@ export default class Viewer extends Vue {
   @Prop() private readonly body!: string;
   @Prop() public readonly onViewerReady!: (HTMLDivElement) => void | undefined;
 
-  public textContent: string | null = null;
-
   mounted() {
     const vditorElem = this.$el as HTMLDivElement;
     Vditor.preview(vditorElem, this.body, {

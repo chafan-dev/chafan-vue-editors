@@ -474,7 +474,12 @@ export default class TiptapCF extends Vue {
   }
 
   public getText() {
-    return (this.$el.querySelector('.editor__content')! as HTMLElement).innerText || '';
+    let text = (this.$el.querySelector('.editor__content')! as HTMLElement).innerText;
+    const hasImg = this.getHTML().includes('<img ');
+    if (hasImg) {
+      text += '[图片]';
+    }
+    return text || '';
   }
 
   public getJSON(): object | null {

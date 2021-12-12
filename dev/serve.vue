@@ -23,6 +23,8 @@
         <div>
           <h2>数据</h2>
           <pre v-if="content"><code>{{ content }}</code></pre>
+          <h2>文本</h2>
+          <pre v-if="tiptapTextContent"><code>{{ tiptapTextContent }}</code></pre>
         </div>
       </div>
       <hr class="tw-my-2 tw-border-black tw-border-1" />
@@ -32,13 +34,19 @@
     </div>
     <h2>Vditor Demo</h2>
     <VditorCF ref="vditor" editor-mode="markdown_splitview" @shortcutSubmit="onShortcutSubmit" />
-    <h3>VditorViewer</h3>
     <button @click="updateVditorContent">Refresh</button>
     <div>
-      <h2>vditor 数据</h2>
+      <h2>Vditor 数据</h2>
       <pre v-if="vditorContent"><code>{{ vditorContent }}</code></pre>
     </div>
-    <VditorViewerCF :body="vditorContent" :key="vditorContent" />
+    <div>
+      <h2>Vditor 预览</h2>
+      <VditorViewerCF :body="vditorContent" :key="vditorContent" />
+    </div>
+    <div>
+      <h2>Vditor 文本</h2>
+      <pre v-if="vditorTextContent"><code>{{ vditorTextContent }}</code></pre>
+    </div>
   </div>
 </template>
 
@@ -56,6 +64,7 @@ import VditorViewerCF from '@/lib-components/VditorViewerCF.vue';
 export default class ServeDev extends Vue {
   commentMode: boolean = false;
   vditorContent: string = '';
+  vditorTextContent: string = '';
 
   readonly body = JSON.stringify({
     type: 'doc',
@@ -72,8 +81,10 @@ export default class ServeDev extends Vue {
     ],
   });
   content = '';
+  tiptapTextContent = '';
   onEditorChange() {
     this.content = JSON.stringify((this.$refs.tiptap as TiptapCF).getJSON(), null, 2) || '';
+    this.tiptapTextContent = (this.$refs.tiptap as TiptapCF).getText();
   }
 
   async upload(blob: Blob) {
@@ -118,6 +129,7 @@ export default class ServeDev extends Vue {
 
   updateVditorContent() {
     this.vditorContent = (this.$refs.vditor as VditorCF).getContent();
+    this.vditorTextContent = (this.$refs.vditor as VditorCF).getText() || '';
   }
 }
 </script>

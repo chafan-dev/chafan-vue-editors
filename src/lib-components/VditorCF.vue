@@ -168,10 +168,16 @@ export default class VditorCF extends Vue {
   }
 
   public getText(): string | null {
-    return (
-      (this.$el.querySelectorAll(`.vditor-${this.translateMode(this.getMode())}`)[0] as HTMLElement)
-        .innerText || null
-    );
+    let fromDiv: string = this.translateMode(this.getMode());
+    if (fromDiv === 'sv') {
+      fromDiv = 'preview';
+    }
+    let text = (this.$el.querySelectorAll(`.vditor-${fromDiv}`)[0] as HTMLElement).innerText;
+    const hasImg = this.getHTML().includes('<img ');
+    if (hasImg) {
+      text += '[图片]';
+    }
+    return text || null;
   }
 
   public getContent() {
