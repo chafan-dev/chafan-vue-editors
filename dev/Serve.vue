@@ -33,7 +33,15 @@
     </section>
     <section class="box">
       <h1 class="tw-text-4xl tw-font-sans">Tiptap Viewer Demo</h1>
-      <TiptapCF :body="body" :editable="false" :onEditorReady="() => {onEditorReady('tiptap')}" />
+      <TiptapCF
+        :body="body"
+        :editable="false"
+        :onEditorReady="
+          () => {
+            onEditorReady('tiptap');
+          }
+        "
+      />
     </section>
     <section class="box">
       <h1 class="tw-text-4xl tw-font-sans">Vditor Demo</h1>
@@ -55,7 +63,15 @@
           </div>
           <div v-if="vditorContent">
             <h2>预览</h2>
-            <VditorViewerCF :body="vditorContent" :key="vditorContent" :onViewerReady="() => {onEditorReady('vditor')}" />
+            <VditorViewerCF
+              :body="vditorContent"
+              :key="vditorContent"
+              :onViewerReady="
+                () => {
+                  onEditorReady('vditor');
+                }
+              "
+            />
           </div>
         </div>
       </div>
