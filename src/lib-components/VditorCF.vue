@@ -17,6 +17,7 @@ export default class VditorCF extends Vue {
   @Prop({ default: false }) public readonly isMobile!: boolean;
   @Prop() public readonly initialContent: string | undefined;
   @Prop({ default: 'wysiwyg' }) public readonly editorMode!: editor_T;
+  @Prop() public readonly placeholder: string | undefined;
 
   private allToolbarItems: any[] = [
     'emoji',
@@ -111,6 +112,7 @@ export default class VditorCF extends Vue {
       this.vditor.destroy();
     }
     const options: IOptions = {
+      placeholder: placeholder,
       minHeight: 300,
       toolbar: this.toolBar,
       cdn: vditorCDN,

@@ -5,7 +5,7 @@ NOTE: Check out the right base release version.
 ```bash
 # (First time: npm install)
 # Change some code
-# Test
+# Test: npm run start
 # Update semver in package.json
 # Commit and push to both latest-chafan and a new semvar vX.X.X barnches 
 npm run build
