@@ -112,7 +112,7 @@ export default class VditorCF extends Vue {
       this.vditor.destroy();
     }
     const options: IOptions = {
-      placeholder: placeholder,
+      placeholder: this.placeholder,
       minHeight: 300,
       toolbar: this.toolBar,
       cdn: vditorCDN,
