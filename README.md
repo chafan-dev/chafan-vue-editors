@@ -1,3 +1,7 @@
+# DEPRECATE NOTICE
+
+2026 Jan: chafan-vue-editors will be merged into https://github.com/chafan-dev/chafan-pwa
+
 ## Chafan Vue Editors
 
 [![Node.js CI](https://github.com/chafan-dev/chafan-vue-editors/actions/workflows/node.js.yml/badge.svg)](https://github.com/chafan-dev/chafan-vue-editors/actions/workflows/node.js.yml)
